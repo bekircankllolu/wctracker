@@ -1,3 +1,16 @@
+const PAPER = [
+  { label: "Bitmiş", value: 0, cls: "danger" },
+  { label: "Az kalmış", value: 30, cls: "warn" },
+  { label: "Biraz bitmiş", value: 70, cls: "ok" },
+  { label: "Daha çok var", value: 100, cls: "ok" },
+];
+function paperStage(level: number): number {
+  if (level <= 10) return 0;
+  if (level <= 45) return 1;
+  if (level <= 85) return 2;
+  return 3;
+}
+
 const SMELL = [
   { label: "Kokmuyor", emoji: "🌿", cls: "s0" },
   { label: "Az kokuyor", emoji: "😷", cls: "s1" },
@@ -13,23 +26,29 @@ type Props = {
 };
 
 export default function ToiletMeters({ paperLevel, smellLevel, canSetSmell, onPaper, onSmell }: Props) {
-  const paperCls = paperLevel <= 15 ? "danger" : paperLevel <= 40 ? "warn" : "ok";
+  const stage = paperStage(paperLevel);
+  const paper = PAPER[stage];
   const smell = SMELL[Math.max(0, Math.min(2, smellLevel))];
-
-  function tapGauge(e: React.MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    onPaper(Math.round(((e.clientX - r.left) / r.width) * 100));
-  }
 
   return (
     <div className="meters">
       <div className="card meter">
         <div className="meter-label"><span aria-hidden>🧻</span> Tuvalet kağıdı</div>
-        <div className={`meter-pct ${paperCls}`}>%{paperLevel}</div>
-        <div className="gauge" onClick={tapGauge} title="Seviyeyi ayarla">
-          <div className={`gauge-fill ${paperCls}`} style={{ width: `${paperLevel}%` }} />
+        <div className={`meter-pct ${paper.cls}`}>{paper.label}</div>
+        <div className="gauge">
+          <div className={`gauge-fill ${paper.cls}`} style={{ width: `${paperLevel}%` }} />
         </div>
-        <button className="ghost-btn" onClick={() => onPaper(100)}>Doldurdum</button>
+        <div className="paper-seg">
+          {PAPER.map((p, i) => (
+            <button
+              key={i}
+              className={`paper-seg-btn ${p.cls} ${stage === i ? "on" : ""}`}
+              onClick={() => onPaper(p.value)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="card meter">
