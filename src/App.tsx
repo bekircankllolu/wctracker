@@ -47,6 +47,7 @@ export default function App() {
 
   const occupied = Boolean(state.occupant);
   const current = members.find((m) => m.name === state.occupant);
+  const me = members.find((m) => m.name === identity);
   const canPoke = occupied && !amOccupant && identity !== state.occupant;
 
   function requireIdentityThen(action: (name: string) => void) {
@@ -62,12 +63,17 @@ export default function App() {
   return (
     <div className={`app ${occupied ? "app-occupied" : "app-free"}`}>
       <header className="app-header">
-        <div className="brand">
-          <span className="brand-icon" aria-hidden>🚽</span>
-          <h1>WC Tracker</h1>
+        <div className="greeting">
+          <span className="greet-sub">🚽 WC Tracker</span>
+          <h1 className="greet-title">{identity ? `Selam, ${identity}` : "Selam 👋"}</h1>
         </div>
-        <button className="identity-chip" onClick={() => setIdentityOpen(true)}>
-          {identity ? `Ben: ${identity} ▾` : "Ben kimim? ▾"}
+        <button
+          className="avatar-chip"
+          onClick={() => setIdentityOpen(true)}
+          style={me ? ({ ["--me-color" as string]: me.color }) : undefined}
+          aria-label="Ben kimim?"
+        >
+          <span className="avatar-emoji">{me?.emoji ?? "🙂"}</span>
         </button>
       </header>
 
@@ -129,7 +135,7 @@ export default function App() {
             />
           )}
 
-          <StatsPanel stats={stats} />
+          <StatsPanel stats={stats} members={members} />
 
           <Chat
             messages={messages}

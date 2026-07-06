@@ -1,49 +1,62 @@
-@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
 
 :root {
-  /* Warm, friendly light theme */
-  --bg: #fff6ee;
-  --bg-tint: #ffe9dc;
+  /* Warm "greige" reference palette */
+  --bg: #ece7df;
+  --bg-2: #f4f0e9;
   --card: #ffffff;
-  --card-2: #fff9f4;
-  --ink: #33272a;
-  --ink-dim: #8a7d80;
-  --line: #f2e2d6;
+  --card-2: #f6f2eb;
+  --ink: #211e1a;
+  --ink-dim: #8b847a;
+  --line: #e7e1d7;
 
-  --coral: #ff7a5a;
-  --coral-deep: #f2593a;
-  --free: #1fbf85;
-  --free-soft: #d8f6ea;
-  --occupied: #ff6b6b;
-  --occupied-soft: #ffe1dd;
+  --amber: #f6b31b;
+  --amber-deep: #e09400;
+  --on-amber: #211e1a;
 
-  --radius: 26px;
+  --free: #7e9a3c;
+  --free-soft: #e8eed6;
+  --occupied: #c85a3c;
+  --occupied-soft: #f6e0d7;
+  --brown: #6e4a3a;
+
+  /* Pastel category tints (quick-cards) */
+  --tint-pink: #f4dcd8;
+  --tint-lav: #e6e0f5;
+  --tint-sage: #e6ead7;
+
+  --radius: 22px;
   --radius-sm: 16px;
-  --shadow: 0 14px 34px rgba(120, 72, 48, 0.14);
-  --shadow-sm: 0 6px 16px rgba(120, 72, 48, 0.12);
+  --radius-xs: 12px;
+  --pill: 999px;
 
-  --font-head: "Baloo 2", ui-rounded, "Segoe UI", system-ui, sans-serif;
-  --font-body: "Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+  --shadow: 0 12px 30px rgba(74, 60, 44, 0.1);
+  --shadow-sm: 0 4px 14px rgba(74, 60, 44, 0.08);
+
+  --font: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   color-scheme: light;
-  font-family: var(--font-body);
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1f1a24;
-    --bg-tint: #2a2130;
-    --card: #2a2331;
-    --card-2: #322838;
-    --ink: #f6eef2;
-    --ink-dim: #b3a3ad;
-    --line: #3a2f42;
-    --free-soft: rgba(31, 191, 133, 0.18);
-    --occupied-soft: rgba(255, 107, 107, 0.18);
-    --shadow: 0 16px 38px rgba(0, 0, 0, 0.4);
-    --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.35);
+    --bg: #1c1a17;
+    --bg-2: #232019;
+    --card: #26231e;
+    --card-2: #2e2a24;
+    --ink: #f4efe8;
+    --ink-dim: #a89f93;
+    --line: #372f27;
+    --free-soft: rgba(126, 154, 60, 0.2);
+    --occupied-soft: rgba(200, 90, 60, 0.22);
+    --tint-pink: #3a2a29;
+    --tint-lav: #2c2838;
+    --tint-sage: #2b2f22;
+    --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 5px 16px rgba(0, 0, 0, 0.38);
     color-scheme: dark;
   }
 }
@@ -70,11 +83,9 @@ button {
   border: none;
   color: inherit;
 }
-
 button:disabled {
   cursor: not-allowed;
 }
-
 input {
   font-family: inherit;
 }
