@@ -1,26 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import type { Member } from "../members";
 
 export type WcState = {
   occupant: string | null;
   entered_at: string | null;
+  note: string | null;
 };
 
 type Status = "loading" | "ready" | "error";
 
 const ROW_ID = 1;
+const SELECT = "occupant, entered_at, note";
 
 export function useWcState() {
-  const [state, setState] = useState<WcState>({ occupant: null, entered_at: null });
+  const [state, setState] = useState<WcState>({
+    occupant: null,
+    entered_at: null,
+    note: null,
+  });
   const [status, setStatus] = useState<Status>("loading");
   const [busy, setBusy] = useState(false);
 
-  // İlk yükleme: mevcut durumu çek.
   useEffect(() => {
     let active = true;
     supabase
       .from("wc_state")
-      .select("occupant, entered_at")
+      .select(SELECT)
       .eq("id", ROW_ID)
       .single()
       .then(({ data, error }) => {
@@ -29,7 +35,7 @@ export function useWcState() {
           setStatus("error");
           return;
         }
-        setState({ occupant: data.occupant, entered_at: data.entered_at });
+        setState(data as WcState);
         setStatus("ready");
       });
     return () => {
@@ -44,47 +50,50 @@ export function useWcState() {
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "wc_state" },
-        (payload) => {
-          const next = payload.new as WcState;
-          setState({ occupant: next.occupant, entered_at: next.entered_at });
-        },
+        (payload) => setState(payload.new as WcState),
       )
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
 
-  const enter = useCallback(async (name: string) => {
+  const enter = useCallback(async (member: Member) => {
     setBusy(true);
     // Sadece boşken gir (aynı anda ikinci kişiyi engelle).
     const { data, error } = await supabase
       .from("wc_state")
-      .update({ occupant: name, entered_at: new Date().toISOString() })
+      .update({ occupant: member.name, entered_at: new Date().toISOString(), note: null })
       .eq("id", ROW_ID)
       .is("occupant", null)
-      .select("occupant, entered_at")
+      .select(SELECT)
       .maybeSingle();
     setBusy(false);
-    if (!error && data) {
-      setState({ occupant: data.occupant, entered_at: data.entered_at });
-    }
+    if (!error && data) setState(data as WcState);
   }, []);
 
   const exit = useCallback(async () => {
     setBusy(true);
     const { data, error } = await supabase
       .from("wc_state")
-      .update({ occupant: null, entered_at: null })
+      .update({ occupant: null, entered_at: null, note: null })
       .eq("id", ROW_ID)
-      .select("occupant, entered_at")
+      .select(SELECT)
       .single();
     setBusy(false);
-    if (!error && data) {
-      setState({ occupant: data.occupant, entered_at: data.entered_at });
-    }
+    if (!error && data) setState(data as WcState);
   }, []);
 
-  return { state, status, busy, enter, exit };
+  const updateNote = useCallback(async (note: string) => {
+    const trimmed = note.trim();
+    // İyimser güncelleme: yazan kişi anında görsün.
+    setState((prev) => ({ ...prev, note: trimmed || null }));
+    await supabase
+      .from("wc_state")
+      .update({ note: trimmed || null })
+      .eq("id", ROW_ID)
+      .not("occupant", "is", null);
+  }, []);
+
+  return { state, status, busy, enter, exit, updateNote };
 }

@@ -36,17 +36,27 @@ Tek satırlık `wc_state` tablosu tüm durumu tutar:
 | `updated_at` | timestamptz | Otomatik güncellenir |
 
 Tabloda Realtime açıktır ve aile içi kullanım için gevşek RLS policy'leri
-(`select` + `update`) tanımlıdır.
+tanımlıdır. `note` kolonu, içerideki kişinin bıraktığı notu tutar.
 
-## Aile bireylerini düzenleme
+`members` tablosu düzenlenebilir kadroyu tutar (`name`, `emoji`, `color`,
+`sort_order`); Realtime açıktır, uygulama içinden eklenip düzenlenebilir.
 
-`src/members.ts` içindeki `MEMBERS` dizisini düzenleyin — isim, emoji ve renk.
+## Özellikler
+
+- **Canlı durum:** DOLU/BOŞ + içeridekinin adı + canlı süre sayacı.
+- **Düzenlenebilir kadro:** "Kadroyu düzenle" ile aile bireyi ekle / düzenle /
+  sil (isim, emoji, renk). Değişiklikler tüm cihazlara anında yansır.
+- **Not düşme:** İçerideki kişi hazır çipler ("💩 Büyük geldi", "💦 Küçük" …)
+  veya serbest metinle (80 karakter) not bırakır; not kartta görünür.
+
+Kadro artık koda gömülü değil, veritabanından gelir. Emoji/renk seçenekleri
+`src/members.ts` içinde tanımlıdır.
 
 ## Test (canlı senkron)
 
 `npm run dev` sonrası uygulamayı **iki ayrı sekmede** açın. Birinde bir isme
-dokunun → diğer sekmede anında "DOLU" ve süre sayacı belirmeli. "Çıktım" →
-her iki sekme de anında "BOŞ"a döner.
+dokunun → diğer sekmede anında "DOLU", süre sayacı ve not belirmeli. "Çıktım" →
+her iki sekme de anında "MÜSAİT"e döner. Kadro değişiklikleri de anında yansır.
 
 ## Derleme
 
