@@ -93,5 +93,5 @@ export function useVisits() {
     return computeStats(visits.filter((v) => new Date(v.created_at).getTime() >= weekAgo));
   }, [visits]);
 
-  return { stats, statsWeek };
+  return { stats, statsWeek, visits };
 }
