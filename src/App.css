@@ -1,0 +1,227 @@
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: max(24px, env(safe-area-inset-top)) 20px
+    max(24px, env(safe-area-inset-bottom));
+  gap: 28px;
+  transition: background 0.6s ease;
+  /* Durum rengi arka plana hafifçe yansır. */
+  background: radial-gradient(
+    120% 80% at 50% -10%,
+    var(--tint, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.app-free {
+  --tint: var(--free-soft);
+}
+
+.app-occupied {
+  --tint: var(--occupied-soft);
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.app-header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.app-tagline {
+  margin-top: 6px;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+}
+
+/* ---------- Main ---------- */
+.app-main {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* ---------- Status card ---------- */
+.status-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px 24px 44px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: border-color 0.5s ease, transform 0.3s ease;
+}
+
+.status-card.free {
+  border-color: color-mix(in srgb, var(--free) 45%, transparent);
+}
+
+.status-card.occupied {
+  border-color: color-mix(in srgb, var(--occupied) 55%, transparent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow), 0 0 0 0 var(--occupied-soft);
+  }
+  50% {
+    box-shadow: var(--shadow), 0 0 0 14px transparent;
+  }
+}
+
+.status-emoji {
+  font-size: 4.6rem;
+  line-height: 1;
+}
+
+.status-label {
+  margin-top: 14px;
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.status-card.free .status-label {
+  color: var(--free);
+}
+
+.status-card.occupied .status-label {
+  color: var(--occupied);
+}
+
+.status-sub {
+  margin-top: 10px;
+  color: var(--text-dim);
+  font-size: 1.05rem;
+}
+
+.status-occupant {
+  margin-top: 12px;
+  font-size: 1.25rem;
+}
+
+.status-occupant strong {
+  font-weight: 800;
+}
+
+.status-timer {
+  margin-top: 8px;
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Member buttons ---------- */
+.members-title,
+.exit-label {
+  text-align: center;
+  color: var(--text-dim);
+  font-weight: 600;
+  margin-bottom: 14px;
+  font-size: 1rem;
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.member-btn {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 18px;
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  transition: transform 0.12s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.member-btn:hover:not(:disabled) {
+  border-color: var(--member-color);
+  transform: translateY(-3px);
+}
+
+.member-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.member-btn:disabled {
+  opacity: 0.4;
+}
+
+.member-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.member-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* ---------- Exit button ---------- */
+.exit-btn {
+  width: 100%;
+  background: var(--occupied);
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 800;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  transition: transform 0.12s ease, filter 0.2s ease;
+}
+
+.exit-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.exit-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.exit-btn:disabled {
+  opacity: 0.6;
+}
+
+/* ---------- Notices ---------- */
+.notice {
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text-dim);
+  box-shadow: var(--shadow);
+  margin: auto 0;
+}
+
+.notice.error {
+  color: var(--occupied);
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  text-align: center;
+}
