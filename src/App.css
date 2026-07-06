@@ -204,6 +204,60 @@
   padding: 20px;
 }
 
+/* ---------- Enter panel (device identity) ---------- */
+.enter-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 18px;
+  text-align: center;
+}
+.enter-hello {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.enter-hello strong {
+  font-family: var(--font-head);
+  font-weight: 800;
+}
+.enter-btn {
+  width: 100%;
+  background: linear-gradient(180deg, var(--coral) 0%, var(--coral-deep) 100%);
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, filter 0.2s ease;
+}
+.enter-btn:hover:not(:disabled) { filter: brightness(1.05); }
+.enter-btn:active:not(:disabled) { transform: scale(0.97); }
+.enter-btn:disabled { opacity: 0.6; }
+.enter-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+/* ---------- Occupant lock hint ---------- */
+.occupant-hint {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 16px;
+  text-align: center;
+  color: var(--ink-dim);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.occupant-hint strong { color: var(--ink); font-weight: 800; }
+
 /* ---------- Note panel ---------- */
 .note-panel {
   background: var(--card);
