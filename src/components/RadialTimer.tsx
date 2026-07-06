@@ -16,19 +16,10 @@ function clock(sec: number): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
 }
 
-const CX = 120;
-const CY = 120;
-const R_IN = 86;
-const R_OUT = 102;
-const R_KNOB = 94;
-const TICKS = 60;
+const CX = 120, CY = 120, R_IN = 88, R_OUT = 104, TICKS = 60;
 
 export default function RadialTimer({ seconds, name, emoji, color, avatarUrl }: Props) {
-  const active = seconds % 60; // her dakika bir tur döner
-  const knobAngle = (-90 + active * 6) * (Math.PI / 180);
-  const knobX = CX + R_KNOB * Math.cos(knobAngle);
-  const knobY = CY + R_KNOB * Math.sin(knobAngle);
-
+  const active = seconds % 60;
   return (
     <div className="dial">
       <svg viewBox="0 0 240 240" className="dial-svg" aria-hidden>
@@ -38,29 +29,19 @@ export default function RadialTimer({ seconds, name, emoji, color, avatarUrl }: 
           return (
             <line
               key={i}
-              x1={CX + R_IN * Math.cos(a)}
-              y1={CY + R_IN * Math.sin(a)}
-              x2={CX + R_OUT * Math.cos(a)}
-              y2={CY + R_OUT * Math.sin(a)}
-              stroke={on ? "var(--teal)" : "var(--teal-soft)"}
-              strokeWidth={3.4}
-              strokeLinecap="round"
+              x1={CX + R_IN * Math.cos(a)} y1={CY + R_IN * Math.sin(a)}
+              x2={CX + R_OUT * Math.cos(a)} y2={CY + R_OUT * Math.sin(a)}
+              stroke={on ? "var(--orange)" : "var(--line)"}
+              strokeWidth={3.2} strokeLinecap="round"
             />
           );
         })}
       </svg>
-
       <div className="dial-center">
-        <div className="dial-label">{name} içeride</div>
-        <div className="dial-time">{clock(seconds)}</div>
-        <div className="dial-sub">şu kadar süredir 🚽</div>
-      </div>
-
-      <div
-        className="dial-knob"
-        style={{ left: `${(knobX / 240) * 100}%`, top: `${(knobY / 240) * 100}%` }}
-      >
-        <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={44} />
+        <span className="dial-ava"><Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={72} /></span>
+        <span className="dial-name">{name} içeride</span>
+        <span className="dial-time">{clock(seconds)}</span>
+        <span className="dial-sub">şu kadar süredir 🚽</span>
       </div>
     </div>
   );

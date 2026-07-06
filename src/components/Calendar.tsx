@@ -1,104 +1,90 @@
+import { useState } from "react";
 import Avatar from "./Avatar";
 import type { Member } from "../members";
 import type { Visit } from "../lib/useVisits";
 
 const DAYS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const key = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 type Props = { members: Member[]; visits: Visit[] };
 
-function localDay(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
 export default function Calendar({ members, visits }: Props) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
+  const today = new Date();
+  const [view, setView] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const memberOf = (n: string) => members.find((m) => m.name === n);
 
-  // Gün -> kişi -> adet
   const byDay = new Map<string, Map<string, number>>();
   for (const v of visits) {
     const d = new Date(v.created_at);
-    if (d.getFullYear() !== year || d.getMonth() !== month) continue;
-    const key = localDay(v.created_at);
-    const m = byDay.get(key) ?? new Map();
-    m.set(v.member_name, (m.get(v.member_name) ?? 0) + 1);
-    byDay.set(key, m);
+    const k = key(d);
+    const mm = byDay.get(k) ?? new Map();
+    mm.set(v.member_name, (mm.get(v.member_name) ?? 0) + 1);
+    byDay.set(k, mm);
   }
-
-  const dayTop = (day: number) => {
-    const m = byDay.get(`${year}-${month}-${day}`);
-    if (!m) return null;
-    let name = "", count = 0, total = 0;
-    for (const [n, c] of m) { total += c; if (c > count) { count = c; name = n; } }
+  const dayInfo = (d: Date) => {
+    const mm = byDay.get(key(d));
+    if (!mm) return null;
+    let name = "", best = 0, total = 0;
+    for (const [n, c] of mm) { total += c; if (c > best) { best = c; name = n; } }
     return { name, total };
   };
 
-  // Bu haftanın (Pzt-Paz) şampiyonu
-  const dow = (now.getDay() + 6) % 7;
-  const monday = new Date(now); monday.setHours(0, 0, 0, 0); monday.setDate(now.getDate() - dow);
-  const weekCounts = new Map<string, number>();
-  for (const v of visits) {
-    const t = new Date(v.created_at).getTime();
-    if (t >= monday.getTime()) weekCounts.set(v.member_name, (weekCounts.get(v.member_name) ?? 0) + 1);
-  }
+  // Bu haftanın şampiyonu (Pzt-Paz)
+  const dow = (today.getDay() + 6) % 7;
+  const monday = new Date(today); monday.setHours(0, 0, 0, 0); monday.setDate(today.getDate() - dow);
+  const wk = new Map<string, number>();
+  for (const v of visits) if (new Date(v.created_at).getTime() >= monday.getTime()) wk.set(v.member_name, (wk.get(v.member_name) ?? 0) + 1);
   let champ: { name: string; count: number } | null = null;
-  for (const [n, c] of weekCounts) if (!champ || c > champ.count) champ = { name: n, count: c };
+  for (const [n, c] of wk) if (!champ || c > champ.count) champ = { name: n, count: c };
 
-  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const cells: (number | null)[] = [
-    ...Array(firstWeekday).fill(null),
-    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-  ];
+  const first = new Date(view.y, view.m, 1);
+  const start = new Date(first);
+  start.setDate(1 - ((first.getDay() + 6) % 7));
+  const cells = Array.from({ length: 42 }, (_, i) => {
+    const d = new Date(start); d.setDate(start.getDate() + i); return d;
+  });
+
+  const prev = () => setView((v) => (v.m === 0 ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 }));
+  const next = () => setView((v) => (v.m === 11 ? { y: v.y + 1, m: 0 } : { y: v.y, m: v.m + 1 }));
 
   return (
-    <div className="cal-wrap">
-      <div className="champ-card">
-        <span className="champ-emoji" aria-hidden>👑</span>
-        <div className="champ-text">
-          <span className="champ-label">Bu haftanın şampiyonu</span>
-          {champ ? (
-            <strong className="champ-name">{champ.name} · {champ.count} ziyaret</strong>
-          ) : (
-            <strong className="champ-name">Henüz veri yok</strong>
-          )}
+    <>
+      <div className="card cal-panel">
+        <div className="cal-nav">
+          <button className="cal-arrow" onClick={prev} aria-label="Önceki">‹</button>
+          <span className="cal-month">{MONTHS[view.m]} {view.y}</span>
+          <button className="cal-arrow" onClick={next} aria-label="Sonraki">›</button>
         </div>
-        {champ ? (
-          <Avatar emoji={memberOf(champ.name)?.emoji ?? "🙂"} color={memberOf(champ.name)?.color ?? "#e8637a"} avatarUrl={memberOf(champ.name)?.avatar_url} size={44} />
-        ) : null}
-      </div>
-
-      <div className="panel cal-panel">
-        <div className="cal-head">
-          <h2 className="panel-h">{MONTHS[month]} {year}</h2>
-          <span className="panel-p">En çok kim girmiş?</span>
-        </div>
-        <div className="cal-grid cal-dow">
-          {DAYS.map((d) => <span key={d} className="cal-dowcell">{d}</span>)}
-        </div>
+        <div className="cal-grid cal-dow">{DAYS.map((d) => <span key={d} className="cal-dowcell">{d}</span>)}</div>
         <div className="cal-grid">
-          {cells.map((day, i) => {
-            if (day === null) return <span key={`b${i}`} className="cal-cell empty" />;
-            const top = dayTop(day);
-            const mem = top ? memberOf(top.name) : null;
-            const isToday = day === now.getDate();
+          {cells.map((d, i) => {
+            const inMonth = d.getMonth() === view.m;
+            const isToday = key(d) === key(today);
+            const info = inMonth ? dayInfo(d) : null;
+            const col = info ? memberOf(info.name)?.color ?? "#f2711c" : undefined;
             return (
-              <span
-                key={day}
-                className={`cal-cell ${top ? "has" : ""} ${isToday ? "today" : ""}`}
-                style={top && mem ? { ["--c" as string]: mem.color } : undefined}
-              >
-                <span className="cal-num">{day}</span>
-                {top ? <span className="cal-count">{top.total}</span> : null}
+              <span key={i} className={`cal-cell ${!inMonth ? "out" : ""} ${isToday ? "today" : ""}`}>
+                <span className="cal-num">{d.getDate()}</span>
+                {isToday && info ? (
+                  <span className="cal-todaycount">{info.total}</span>
+                ) : info ? (
+                  <span className="cal-dot" style={{ background: col }} />
+                ) : null}
               </span>
             );
           })}
         </div>
       </div>
-    </div>
+
+      <div className="champ-card">
+        <span className="champ-emoji" aria-hidden>👑</span>
+        <div className="champ-text">
+          <span className="champ-label">Bu haftanın şampiyonu</span>
+          <strong className="champ-name">{champ ? `${champ.name} · ${champ.count} ziyaret` : "Henüz veri yok"}</strong>
+        </div>
+        {champ ? <Avatar emoji={memberOf(champ.name)?.emoji ?? "🙂"} color={memberOf(champ.name)?.color ?? "#f2711c"} avatarUrl={memberOf(champ.name)?.avatar_url} size={46} /> : null}
+      </div>
+    </>
   );
 }

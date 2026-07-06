@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import TopBar from "./components/TopBar";
 import StatusCard from "./components/StatusCard";
 import StatusBanner from "./components/StatusBanner";
 import Avatar from "./components/Avatar";
@@ -19,6 +20,12 @@ import { useMessages } from "./lib/useMessages";
 import { usePoke } from "./lib/usePoke";
 import { useIdentity } from "./lib/useIdentity";
 import "./App.css";
+
+const TAB_META: Record<Tab, { icon: string; title: string }> = {
+  durum: { icon: "✨", title: "Tuvalet Takip" },
+  siralama: { icon: "🏆", title: "Sıralama" },
+  takvim: { icon: "📅", title: "Takvim" },
+};
 
 export default function App() {
   const {
@@ -53,7 +60,6 @@ export default function App() {
     return () => clearTimeout(t);
   }, [pokeToast]);
 
-  const today = new Intl.DateTimeFormat("tr-TR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
   const current = members.find((m) => m.name === state.occupant);
   const me = members.find((m) => m.name === identity);
   const canPoke = phase === "occupied" && !amOccupant && identity !== state.occupant;
@@ -61,31 +67,39 @@ export default function App() {
     ? Math.max(0, Math.floor((now - new Date(state.entered_at).getTime()) / 1000))
     : 0;
 
-  function handleEnter() {
-    if (identity) enter(identity);
-    else setIdentityOpen(true);
-  }
+  const handleEnter = () => (identity ? enter(identity) : setIdentityOpen(true));
 
-  const banner = (
-    <StatusBanner phase={phase} occupant={state.occupant} elapsedSec={elapsedSec} cooldownMs={cooldownMs} />
+  const avatarBtn = (
+    <button
+      className="avatar-chip"
+      onClick={() => setIdentityOpen(true)}
+      style={me ? ({ ["--me-color" as string]: me.color }) : undefined}
+      aria-label="Ben kimim?"
+    >
+      {me ? <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={38} /> : <span className="avatar-emoji">🙂</span>}
+    </button>
+  );
+  const rightSlot =
+    tab === "siralama" ? <span className="visit-pill">{stats.totalVisits} ziyaret</span> : avatarBtn;
+
+  const meters = (
+    <ToiletMeters
+      paperLevel={state.paper_level}
+      smellLevel={state.smell_level}
+      canSetSmell={amOccupant}
+      onPaper={updatePaper}
+      onSmell={updateSmell}
+    />
   );
 
   return (
     <div className="app">
-      <header className="app-header">
-        <div className="greeting">
-          <h1 className="greet-title">{identity ? `Selam, ${identity} 👋` : "Selam 👋"}</h1>
-          <span className="greet-date">{today}</span>
-        </div>
-        <button
-          className="avatar-chip"
-          onClick={() => setIdentityOpen(true)}
-          style={me ? ({ ["--me-color" as string]: me.color }) : undefined}
-          aria-label="Ben kimim?"
-        >
-          {me ? <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={46} /> : <span className="avatar-emoji">🙂</span>}
-        </button>
-      </header>
+      <TopBar
+        icon={TAB_META[tab].icon}
+        title={TAB_META[tab].title}
+        right={rightSlot}
+        onMenu={() => setRosterOpen(true)}
+      />
 
       {status === "error" ? (
         <div className="notice error">Bağlantı kurulamadı. Supabase ayarlarını kontrol edin.</div>
@@ -95,6 +109,8 @@ export default function App() {
         <main className="app-main" key={tab}>
           {tab === "durum" ? (
             <>
+              {phase === "occupied" ? <StatusBanner occupant={state.occupant} elapsedSec={elapsedSec} /> : null}
+
               <StatusCard
                 phase={phase}
                 occupant={state.occupant}
@@ -102,59 +118,39 @@ export default function App() {
                 note={state.note}
                 photoUrl={state.photo_url}
                 emoji={current?.emoji ?? "🚽"}
-                color={current?.color ?? "#e8637a"}
+                color={current?.color ?? "#f2711c"}
                 avatarUrl={current?.avatar_url ?? null}
                 poked={poked}
                 cooldownMs={cooldownMs}
                 multiplier={state.smell_multiplier}
               />
 
+              {phase === "occupied" && amOccupant ? <NotePanel note={state.note} onSave={updateNote} /> : null}
+
+              {meters}
+
               {phase === "occupied" ? (
                 amOccupant ? (
                   <>
-                    <NotePanel note={state.note} onSave={updateNote} />
                     <PhotoButton hasPhoto={Boolean(state.photo_url)} onUploaded={updatePhoto} />
-                    <button className="exit-btn" disabled={busy} onClick={() => exit()}>
-                      Çıktım, tuvalet boşaldı 🎉
-                    </button>
+                    <button className="exit-btn" disabled={busy} onClick={() => exit()}>Çıktım, tuvalet boşaldı 🎉</button>
                   </>
                 ) : (
                   <>
                     {canPoke ? (
-                      <button className="poke-btn" onClick={() => sendPoke(identity ?? "Biri")}>
-                        👉 Dürt ({state.occupant})
-                      </button>
+                      <button className="poke-btn" onClick={() => sendPoke(identity ?? "Biri")}>👉 Dürt ({state.occupant})</button>
                     ) : null}
-                    <div className="occupant-hint">
-                      🔒 Durumu yalnızca <strong>{state.occupant}</strong> (giren cihaz) değiştirebilir.
-                    </div>
+                    <div className="lock-hint">🔒 Durumu yalnızca <strong>{state.occupant}</strong> (giren cihaz) değiştirebilir.</div>
                   </>
                 )
               ) : phase === "cooldown" ? (
-                <button className="enter-btn warn" disabled={busy} onClick={handleEnter}>
-                  😬 Yine de gir (koku çarpanı artar)
-                </button>
+                <button className="poke-btn" disabled={busy} onClick={handleEnter}>😬 Yine de gir (koku çarpanı artar)</button>
               ) : (
-                <EnterPanel
-                  identity={identity}
-                  disabled={busy}
-                  onEnter={handleEnter}
-                  onPickIdentity={() => setIdentityOpen(true)}
-                  onManage={() => setRosterOpen(true)}
-                />
+                <EnterPanel identity={identity} disabled={busy} onEnter={handleEnter} onPickIdentity={() => setIdentityOpen(true)} onManage={() => setRosterOpen(true)} />
               )}
-
-              <ToiletMeters
-                paperLevel={state.paper_level}
-                smellLevel={state.smell_level}
-                canSetSmell={amOccupant}
-                onPaper={updatePaper}
-                onSmell={updateSmell}
-              />
             </>
           ) : tab === "siralama" ? (
             <>
-              {banner}
               <StatsPanel stats={stats} statsWeek={statsWeek} members={members} />
               <Chat
                 messages={messages}
@@ -164,10 +160,7 @@ export default function App() {
               />
             </>
           ) : (
-            <>
-              {banner}
-              <Calendar members={members} visits={visits} />
-            </>
+            <Calendar members={members} visits={visits} />
           )}
         </main>
       )}
@@ -177,22 +170,10 @@ export default function App() {
       {pokeToast ? <div className="poke-toast">{pokeToast}</div> : null}
 
       {rosterOpen ? (
-        <RosterEditor
-          members={members}
-          onClose={() => setRosterOpen(false)}
-          onAdd={addMember}
-          onUpdate={updateMember}
-          onRemove={removeMember}
-        />
+        <RosterEditor members={members} onClose={() => setRosterOpen(false)} onAdd={addMember} onUpdate={updateMember} onRemove={removeMember} />
       ) : null}
-
       {identityOpen ? (
-        <IdentityPicker
-          members={members}
-          identity={identity}
-          onPick={setIdentity}
-          onClose={() => setIdentityOpen(false)}
-        />
+        <IdentityPicker members={members} identity={identity} onPick={setIdentity} onClose={() => setIdentityOpen(false)} />
       ) : null}
     </div>
   );
