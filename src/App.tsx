@@ -20,7 +20,12 @@ export default function App() {
   const { state, status, busy, amOccupant, enter, exit, updateNote, updatePhoto } =
     useWcState();
   const { members, addMember, updateMember, removeMember } = useMembers();
-  const { stats } = useVisits();
+  const { stats, statsWeek } = useVisits();
+  const today = new Intl.DateTimeFormat("tr-TR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
   const { messages, send } = useMessages();
   const { identity, setIdentity } = useIdentity();
 
@@ -65,8 +70,8 @@ export default function App() {
     <div className={`app ${occupied ? "app-occupied" : "app-free"}`}>
       <header className="app-header">
         <div className="greeting">
-          <span className="greet-sub">🚽 WC Tracker</span>
-          <h1 className="greet-title">{identity ? `Selam, ${identity}` : "Selam 👋"}</h1>
+          <h1 className="greet-title">{identity ? `Selam, ${identity} 👋` : "Selam 👋"}</h1>
+          <span className="greet-date">{today}</span>
         </div>
         <button
           className="avatar-chip"
@@ -75,7 +80,7 @@ export default function App() {
           aria-label="Ben kimim?"
         >
           {me ? (
-            <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={44} />
+            <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={46} />
           ) : (
             <span className="avatar-emoji">🙂</span>
           )}
@@ -141,7 +146,7 @@ export default function App() {
             />
           )}
 
-          <StatsPanel stats={stats} members={members} />
+          <StatsPanel stats={stats} statsWeek={statsWeek} members={members} />
 
           <Chat
             messages={messages}

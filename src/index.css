@@ -1,40 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
 
 :root {
-  --bg: #f1ece3;
-  --bg-2: #f8f4ec;
+  /* Reference palette (pink/coral + cream + amber + teal) */
+  --bg: #f6f0de;
+  --bg-2: #fbf7ea;
   --card: #ffffff;
-  --card-2: #f5f0e7;
-  --ink: #211d19;
-  --ink-dim: #8a8178;
-  --line: #eae3d8;
+  --cream: #faf5e1;
+  --ink: #211f1b;
+  --ink-dim: #8a857a;
+  --line: #ece4d4;
 
-  --amber: #f6b31b;
-  --amber-deep: #e09400;
-  --on-amber: #211d19;
+  --coral: #e8637a;
+  --coral-deep: #d94e69;
+  --coral-soft: #fbdfe4;
 
-  --coral: #ec6a80;
-  --coral-deep: #d8536b;
-  --coral-soft: #fbe0e5;
+  --amber: #f2a93b;
+  --amber-deep: #e2952a;
 
-  --teal: #2f8f80;
-  --teal-deep: #26766a;
-  --teal-soft: #d7ece7;
+  --teal: #2e8b7f;
+  --teal-deep: #22665e;
+  --mint: #8fd0c3;
+  --teal-soft: #d5eae4;
 
-  --cream: #fbf5e2;
+  --on-amber: #211f1b;
 
   --free: var(--teal);
-  --free-soft: var(--teal-soft);
   --occupied: var(--coral);
-  --occupied-soft: var(--coral-soft);
 
-  --radius: 26px;
-  --radius-sm: 18px;
-  --radius-xs: 13px;
+  --radius: 28px;
+  --radius-sm: 20px;
+  --radius-xs: 14px;
   --pill: 999px;
 
-  --shadow: 0 14px 34px rgba(74, 60, 44, 0.12);
-  --shadow-sm: 0 5px 16px rgba(74, 60, 44, 0.09);
+  --shadow: 0 16px 36px rgba(74, 55, 40, 0.12);
+  --shadow-sm: 0 6px 18px rgba(74, 55, 40, 0.09);
 
   --font: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
 
@@ -46,44 +45,24 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1b1916;
+    --bg: #1b1915;
     --bg-2: #232019;
-    --card: #26231e;
-    --card-2: #2f2b24;
-    --ink: #f4efe8;
-    --ink-dim: #a89f93;
-    --line: #38302732;
-    --coral-soft: rgba(236, 106, 128, 0.2);
-    --teal-soft: rgba(47, 143, 128, 0.22);
+    --card: #26231d;
     --cream: #2f2b22;
+    --ink: #f4efe6;
+    --ink-dim: #a89f93;
+    --line: #382f2540;
+    --coral-soft: rgba(232, 99, 122, 0.2);
+    --teal-soft: rgba(46, 139, 127, 0.24);
     --shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
     --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.38);
     color-scheme: dark;
   }
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-body {
-  min-height: 100dvh;
-  background: var(--bg);
-  color: var(--ink);
-}
-#root {
-  min-height: 100dvh;
-}
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  color: inherit;
-}
-button:disabled {
-  cursor: not-allowed;
-}
-input {
-  font-family: inherit;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100dvh; background: var(--bg); color: var(--ink); }
+#root { min-height: 100dvh; }
+button { font-family: inherit; cursor: pointer; border: none; color: inherit; }
+button:disabled { cursor: not-allowed; }
+input { font-family: inherit; }
