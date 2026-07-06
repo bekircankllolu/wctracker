@@ -1,41 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-  /* Reference palette (pink/coral + cream + amber + teal) */
-  --bg: #f6f0de;
-  --bg-2: #fbf7ea;
+  --bg: #f6f4ef;
   --card: #ffffff;
-  --cream: #faf5e1;
-  --ink: #211f1b;
-  --ink-dim: #8a857a;
-  --line: #ece4d4;
+  --ink: #1a1a1a;
+  --ink-2: #171717;
+  --ink-dim: #97938c;
+  --ink-mid: #6b675f;
+  --line: #ece9e2;
 
-  --coral: #e8637a;
-  --coral-deep: #d94e69;
-  --coral-soft: #fbdfe4;
+  --orange: #f2711c;
+  --orange-deep: #e0620f;
+  --orange-soft: #fde6d6;
 
-  --amber: #f2a93b;
-  --amber-deep: #e2952a;
+  --green: #3f9e56;
+  --green-soft: #e3f3e6;
+  --purple: #8b5cf6;
 
-  --teal: #2e8b7f;
-  --teal-deep: #22665e;
-  --mint: #8fd0c3;
-  --teal-soft: #d5eae4;
+  --gold: #f6c445;
+  --silver: #c7ccd6;
+  --bronze: #d79766;
 
-  --on-amber: #211f1b;
-
-  --free: var(--teal);
-  --occupied: var(--coral);
-
-  --radius: 28px;
-  --radius-sm: 20px;
-  --radius-xs: 14px;
+  --radius: 20px;
+  --radius-sm: 16px;
+  --radius-xs: 12px;
   --pill: 999px;
 
-  --shadow: 0 16px 36px rgba(74, 55, 40, 0.12);
-  --shadow-sm: 0 6px 18px rgba(74, 55, 40, 0.09);
+  --shadow: 0 8px 26px rgba(30, 25, 18, 0.07);
+  --shadow-sm: 0 3px 12px rgba(30, 25, 18, 0.05);
 
-  --font: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   color-scheme: light;
   font-family: var(--font);
@@ -45,17 +39,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1b1915;
-    --bg-2: #232019;
-    --card: #26231d;
-    --cream: #2f2b22;
-    --ink: #f4efe6;
-    --ink-dim: #a89f93;
-    --line: #382f2540;
-    --coral-soft: rgba(232, 99, 122, 0.2);
-    --teal-soft: rgba(46, 139, 127, 0.24);
-    --shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
-    --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.38);
+    --bg: #171613;
+    --card: #201f1b;
+    --ink: #f4f1ea;
+    --ink-2: #f4f1ea;
+    --ink-dim: #8f8a80;
+    --ink-mid: #b4afa4;
+    --line: #2c2a24;
+    --orange-soft: #35251733;
+    --green-soft: rgba(63, 158, 86, 0.18);
+    --shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.34);
     color-scheme: dark;
   }
 }
