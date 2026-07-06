@@ -23,7 +23,7 @@ import "./App.css";
 
 const TAB_META: Record<Tab, { icon: string; title: string }> = {
   durum: { icon: "✨", title: "Tuvalet Takip" },
-  siralama: { icon: "🏆", title: "Sıralama" },
+  sohbet: { icon: "💬", title: "Sohbet" },
   takvim: { icon: "📅", title: "Takvim" },
 };
 
@@ -80,7 +80,7 @@ export default function App() {
     </button>
   );
   const rightSlot =
-    tab === "siralama" ? <span className="visit-pill">{stats.totalVisits} ziyaret</span> : avatarBtn;
+    tab === "takvim" ? <span className="visit-pill">{stats.totalVisits} ziyaret</span> : avatarBtn;
 
   const meters = (
     <ToiletMeters
@@ -149,18 +149,18 @@ export default function App() {
                 <EnterPanel identity={identity} disabled={busy} onEnter={handleEnter} onPickIdentity={() => setIdentityOpen(true)} onManage={() => setRosterOpen(true)} />
               )}
             </>
-          ) : tab === "siralama" ? (
-            <>
-              <StatsPanel stats={stats} statsWeek={statsWeek} members={members} />
-              <Chat
-                messages={messages}
-                identity={identity}
-                onSend={(body) => (identity ? send(identity, body) : setIdentityOpen(true))}
-                onPickIdentity={() => setIdentityOpen(true)}
-              />
-            </>
+          ) : tab === "sohbet" ? (
+            <Chat
+              messages={messages}
+              identity={identity}
+              onSend={(body) => (identity ? send(identity, body) : setIdentityOpen(true))}
+              onPickIdentity={() => setIdentityOpen(true)}
+            />
           ) : (
-            <Calendar members={members} visits={visits} />
+            <>
+              <Calendar members={members} visits={visits} />
+              <StatsPanel stats={stats} statsWeek={statsWeek} members={members} />
+            </>
           )}
         </main>
       )}
