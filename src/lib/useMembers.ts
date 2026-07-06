@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import type { Member } from "../members";
 
+const SELECT = "id, name, emoji, color, sort_order, avatar_url";
+
 export function useMembers() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -9,7 +11,7 @@ export function useMembers() {
   const fetchMembers = useCallback(async () => {
     const { data, error } = await supabase
       .from("members")
-      .select("id, name, emoji, color, sort_order")
+      .select(SELECT)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
     if (!error && data) setMembers(data as Member[]);
@@ -36,13 +38,24 @@ export function useMembers() {
   }, [fetchMembers]);
 
   const addMember = useCallback(
-    async (name: string, emoji: string, color: string) => {
+    async (
+      name: string,
+      emoji: string,
+      color: string,
+      avatarUrl: string | null = null,
+    ) => {
       const nextOrder =
         members.reduce((max, m) => Math.max(max, m.sort_order), 0) + 1;
       const { data, error } = await supabase
         .from("members")
-        .insert({ name: name.trim(), emoji, color, sort_order: nextOrder })
-        .select("id, name, emoji, color, sort_order")
+        .insert({
+          name: name.trim(),
+          emoji,
+          color,
+          sort_order: nextOrder,
+          avatar_url: avatarUrl,
+        })
+        .select(SELECT)
         .single();
       if (!error && data) setMembers((prev) => [...prev, data as Member]);
     },
@@ -50,13 +63,16 @@ export function useMembers() {
   );
 
   const updateMember = useCallback(
-    async (id: string, patch: Partial<Pick<Member, "name" | "emoji" | "color">>) => {
+    async (
+      id: string,
+      patch: Partial<Pick<Member, "name" | "emoji" | "color" | "avatar_url">>,
+    ) => {
       const clean = { ...patch, ...(patch.name ? { name: patch.name.trim() } : {}) };
       const { data, error } = await supabase
         .from("members")
         .update(clean)
         .eq("id", id)
-        .select("id, name, emoji, color, sort_order")
+        .select(SELECT)
         .single();
       if (!error && data)
         setMembers((prev) => prev.map((m) => (m.id === id ? (data as Member) : m)));

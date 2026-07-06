@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Avatar from "./Avatar";
 
 type Props = {
   occupant: string | null;
@@ -7,6 +8,7 @@ type Props = {
   photoUrl: string | null;
   emoji: string;
   color: string;
+  avatarUrl: string | null;
   poked: boolean;
 };
 
@@ -25,6 +27,7 @@ export default function StatusCard({
   photoUrl,
   emoji,
   color,
+  avatarUrl,
   poked,
 }: Props) {
   const [now, setNow] = useState(() => Date.now());
@@ -45,9 +48,11 @@ export default function StatusCard({
       style={occupied ? ({ ["--accent" as string]: color }) : undefined}
     >
       <div className="status-doorframe">
-        <div className="status-emoji" aria-hidden>
-          {occupied ? emoji : "🚽"}
-        </div>
+        {occupied ? (
+          <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={104} shape="rounded" />
+        ) : (
+          <div className="status-emoji" aria-hidden>🚽</div>
+        )}
       </div>
 
       <div className="status-label">{occupied ? "DOLU" : "MÜSAİT"}</div>
