@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import StatusCard from "./components/StatusCard";
+import Avatar from "./components/Avatar";
 import EnterPanel from "./components/EnterPanel";
 import NotePanel from "./components/NotePanel";
 import PhotoButton from "./components/PhotoButton";
@@ -73,7 +74,11 @@ export default function App() {
           style={me ? ({ ["--me-color" as string]: me.color }) : undefined}
           aria-label="Ben kimim?"
         >
-          <span className="avatar-emoji">{me?.emoji ?? "🙂"}</span>
+          {me ? (
+            <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={44} />
+          ) : (
+            <span className="avatar-emoji">🙂</span>
+          )}
         </button>
       </header>
 
@@ -91,7 +96,8 @@ export default function App() {
             note={state.note}
             photoUrl={state.photo_url}
             emoji={current?.emoji ?? "🚽"}
-            color={current?.color ?? "#ff7a5a"}
+            color={current?.color ?? "#f6b31b"}
+            avatarUrl={current?.avatar_url ?? null}
             poked={poked}
           />
 

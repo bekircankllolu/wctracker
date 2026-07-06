@@ -7,6 +7,7 @@ export type Member = {
   emoji: string;
   color: string;
   sort_order: number;
+  avatar_url: string | null;
 };
 
 export const EMOJI_OPTIONS = [

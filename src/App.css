@@ -53,6 +53,36 @@
 .avatar-chip:active { transform: scale(0.94); }
 .avatar-emoji { font-size: 1.6rem; line-height: 1; }
 
+/* ---------- Avatar (photo or emoji fallback) ---------- */
+.avatar-img {
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+.avatar-fallback {
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ---------- Avatar upload (roster form) ---------- */
+.avatar-edit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.avatar-upload { flex: initial; padding: 11px 16px; border-radius: var(--radius-xs); }
+.avatar-clear {
+  background: none;
+  color: var(--ink-dim);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px;
+}
+.avatar-clear:hover { text-decoration: underline; }
+
 /* ---------- Status card ---------- */
 .status-card {
   background: var(--card);

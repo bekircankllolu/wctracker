@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { uploadImage } from "../lib/uploadImage";
 
 type Props = {
   hasPhoto: boolean;
@@ -15,15 +15,8 @@ export default function PhotoButton({ hasPhoto, onUploaded }: Props) {
     e.target.value = ""; // aynı dosya tekrar seçilebilsin
     if (!file) return;
     setBusy(true);
-    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
-    const { error } = await supabase.storage
-      .from("wc-photos")
-      .upload(path, file, { cacheControl: "3600", upsert: false });
-    if (!error) {
-      const { data } = supabase.storage.from("wc-photos").getPublicUrl(path);
-      onUploaded(data.publicUrl);
-    }
+    const url = await uploadImage(file);
+    if (url) onUploaded(url);
     setBusy(false);
   }
 

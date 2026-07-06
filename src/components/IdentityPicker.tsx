@@ -1,4 +1,5 @@
 import type { Member } from "../members";
+import Avatar from "./Avatar";
 
 type Props = {
   members: Member[];
@@ -28,7 +29,7 @@ export default function IdentityPicker({ members, identity, onPick, onClose }: P
                 onClose();
               }}
             >
-              <span className="identity-emoji">{m.emoji}</span>
+              <Avatar emoji={m.emoji} color={m.color} avatarUrl={m.avatar_url} size={50} />
               <span>{m.name}</span>
             </button>
           ))}
