@@ -174,7 +174,7 @@
 .cal-cell { aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
 .cal-num { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
 .cal-cell.out .cal-num { color: var(--ink-dim); opacity: 0.5; }
-.cal-cell.today { background: var(--ink-2); }
+.cal-cell.today { background: var(--ink-2); border-radius: 50%; }
 .cal-cell.today .cal-num { color: #fff; font-weight: 700; }
 .cal-todaycount { font-size: 0.62rem; font-weight: 800; color: var(--orange); }
 .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
