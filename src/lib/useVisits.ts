@@ -9,16 +9,51 @@ export type Visit = {
 };
 
 export type Leader = { name: string; value: number } | null;
-
 export type MemberStat = { name: string; count: number; totalSeconds: number };
 
 export type Stats = {
   totalVisits: number;
-  mostVisits: Leader; // en çok giren (adet)
-  longestStay: Leader; // tek seferde en uzun (saniye)
-  mostTotalTime: Leader; // toplamda en çok süre (saniye)
-  perMember: MemberStat[]; // kişi başı kırılım (çoktan aza)
+  mostVisits: Leader;
+  longestStay: Leader;
+  mostTotalTime: Leader;
+  perMember: MemberStat[];
 };
+
+function computeStats(visits: Visit[]): Stats {
+  const counts = new Map<string, number>();
+  const totals = new Map<string, number>();
+  let longest: Leader = null;
+
+  for (const v of visits) {
+    counts.set(v.member_name, (counts.get(v.member_name) ?? 0) + 1);
+    totals.set(v.member_name, (totals.get(v.member_name) ?? 0) + v.duration_seconds);
+    if (!longest || v.duration_seconds > longest.value) {
+      longest = { name: v.member_name, value: v.duration_seconds };
+    }
+  }
+
+  const top = (m: Map<string, number>): Leader => {
+    let best: Leader = null;
+    for (const [name, value] of m) if (!best || value > best.value) best = { name, value };
+    return best;
+  };
+
+  const perMember: MemberStat[] = [...counts.keys()]
+    .map((name) => ({
+      name,
+      count: counts.get(name) ?? 0,
+      totalSeconds: totals.get(name) ?? 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    totalVisits: visits.length,
+    mostVisits: top(counts),
+    longestStay: longest,
+    mostTotalTime: top(totals),
+    perMember,
+  };
+}
 
 export function useVisits() {
   const [visits, setVisits] = useState<Visit[]>([]);
@@ -38,7 +73,6 @@ export function useVisits() {
     };
   }, []);
 
-  // Yeni ziyaretler anında istatistiklere yansısın.
   useEffect(() => {
     const channel = supabase
       .channel("visits_changes")
@@ -53,46 +87,11 @@ export function useVisits() {
     };
   }, []);
 
-  const stats = useMemo<Stats>(() => {
-    const counts = new Map<string, number>();
-    const totals = new Map<string, number>();
-    let longest: Leader = null;
-
-    for (const v of visits) {
-      counts.set(v.member_name, (counts.get(v.member_name) ?? 0) + 1);
-      totals.set(
-        v.member_name,
-        (totals.get(v.member_name) ?? 0) + v.duration_seconds,
-      );
-      if (!longest || v.duration_seconds > longest.value) {
-        longest = { name: v.member_name, value: v.duration_seconds };
-      }
-    }
-
-    const top = (m: Map<string, number>): Leader => {
-      let best: Leader = null;
-      for (const [name, value] of m) {
-        if (!best || value > best.value) best = { name, value };
-      }
-      return best;
-    };
-
-    const perMember: MemberStat[] = [...counts.keys()]
-      .map((name) => ({
-        name,
-        count: counts.get(name) ?? 0,
-        totalSeconds: totals.get(name) ?? 0,
-      }))
-      .sort((a, b) => b.count - a.count);
-
-    return {
-      totalVisits: visits.length,
-      mostVisits: top(counts),
-      longestStay: longest,
-      mostTotalTime: top(totals),
-      perMember,
-    };
+  const stats = useMemo(() => computeStats(visits), [visits]);
+  const statsWeek = useMemo(() => {
+    const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+    return computeStats(visits.filter((v) => new Date(v.created_at).getTime() >= weekAgo));
   }, [visits]);
 
-  return { stats };
+  return { stats, statsWeek };
 }
