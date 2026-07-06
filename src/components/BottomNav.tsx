@@ -1,4 +1,4 @@
-export type Tab = "durum" | "siralama" | "takvim";
+export type Tab = "durum" | "sohbet" | "takvim";
 
 const ICONS: Record<Tab, JSX.Element> = {
   durum: (
@@ -7,11 +7,10 @@ const ICONS: Record<Tab, JSX.Element> = {
       <path d="M5 9.5V20h14V9.5" />
     </svg>
   ),
-  siralama: (
+  sohbet: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 4h12v3a6 6 0 0 1-12 0V4Z" />
-      <path d="M6 6H3.5a2.5 2.5 0 0 0 3 2.4M18 6h2.5a2.5 2.5 0 0 1-3 2.4" />
-      <path d="M12 13v3M9 20h6M10 20l.5-4M14 20l-.5-4" />
+      <path d="M4 5.5h16v11H9l-4 3.5v-3.5H4Z" />
+      <path d="M8.5 10.5h7M8.5 13h4" />
     </svg>
   ),
   takvim: (
@@ -22,8 +21,8 @@ const ICONS: Record<Tab, JSX.Element> = {
   ),
 };
 
-const LABELS: Record<Tab, string> = { durum: "Durum", siralama: "Sıralama", takvim: "Takvim" };
-const ORDER: Tab[] = ["durum", "siralama", "takvim"];
+const LABELS: Record<Tab, string> = { durum: "Durum", sohbet: "Sohbet", takvim: "Takvim" };
+const ORDER: Tab[] = ["durum", "sohbet", "takvim"];
 
 type Props = { active: Tab; onChange: (t: Tab) => void };
 
