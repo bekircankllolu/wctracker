@@ -33,23 +33,35 @@ Tek satırlık `wc_state` tablosu tüm durumu tutar:
 | `id` | smallint (=1) | Tek tuvalet, tek satır |
 | `occupant` | text, null | İçerideki kişinin adı; boşsa `NULL` |
 | `entered_at` | timestamptz, null | Girildiği an (süre sayacı için) |
+| `note` | text, null | İçeridekinin bıraktığı not |
+| `photo_url` | text, null | İçeridekinin eklediği fotoğrafın URL'i |
 | `updated_at` | timestamptz | Otomatik güncellenir |
 
-Tabloda Realtime açıktır ve aile içi kullanım için gevşek RLS policy'leri
-tanımlıdır. `note` kolonu, içerideki kişinin bıraktığı notu tutar.
+Diğer tablolar (hepsinde Realtime + aile-içi gevşek RLS):
 
-`members` tablosu düzenlenebilir kadroyu tutar (`name`, `emoji`, `color`,
-`sort_order`); Realtime açıktır, uygulama içinden eklenip düzenlenebilir.
+- **`members`** — düzenlenebilir kadro (`name`, `emoji`, `color`, `sort_order`).
+- **`visits`** — tamamlanan her ziyaret (`member_name`, `duration_seconds`, …);
+  istatistikler bundan hesaplanır. Çıkışta bir kayıt eklenir.
+- **`messages`** — mini sohbet (`sender`, `body` ≤ 100 karakter).
+
+Fotoğraflar `wc-photos` adlı public Storage bucket'ında tutulur.
 
 ## Özellikler
 
-- **Canlı durum:** DOLU/BOŞ + içeridekinin adı + canlı süre sayacı.
+- **Canlı durum:** DOLU/MÜSAİT + içeridekinin adı + canlı süre sayacı.
 - **Düzenlenebilir kadro:** "Kadroyu düzenle" ile aile bireyi ekle / düzenle /
-  sil (isim, emoji, renk). Değişiklikler tüm cihazlara anında yansır.
-- **Not düşme:** İçerideki kişi hazır çipler ("💩 Büyük geldi", "💦 Küçük" …)
-  veya serbest metinle (80 karakter) not bırakır; not kartta görünür.
+  sil (isim, emoji, renk). Tüm cihazlara anında yansır.
+- **Not düşme:** İçerideki kişi hazır çipler veya 80 karakterlik serbest metinle
+  not bırakır; not kartta görünür.
+- **Tuvalet Ligi (istatistik):** En çok giren · tek seferde en uzun · toplamda
+  en çok süre — canlı hesaplanır.
+- **Dürtme:** İçeridekini dışarıdakiler dürtebilir; kart titrer + bildirim
+  (Realtime broadcast, kalıcı kayıt yok).
+- **Mini sohbet:** 100 karakter sınırlı, canlı. Gönderen kimliği "Ben kimim?"
+  ile seçilir (cihazda saklanır).
+- **Fotoğraf:** İçerideki kişi bir kare ekleyebilir; kartta önizlenir.
 
-Kadro artık koda gömülü değil, veritabanından gelir. Emoji/renk seçenekleri
+Kadro koda gömülü değil, veritabanından gelir. Emoji/renk seçenekleri
 `src/members.ts` içinde tanımlıdır.
 
 ## Test (canlı senkron)

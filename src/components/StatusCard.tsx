@@ -4,8 +4,10 @@ type Props = {
   occupant: string | null;
   enteredAt: string | null;
   note: string | null;
+  photoUrl: string | null;
   emoji: string;
   color: string;
+  poked: boolean;
 };
 
 function formatDuration(ms: number): string {
@@ -16,7 +18,15 @@ function formatDuration(ms: number): string {
   return `${min} dk ${sec.toString().padStart(2, "0")} sn`;
 }
 
-export default function StatusCard({ occupant, enteredAt, note, emoji, color }: Props) {
+export default function StatusCard({
+  occupant,
+  enteredAt,
+  note,
+  photoUrl,
+  emoji,
+  color,
+  poked,
+}: Props) {
   const [now, setNow] = useState(() => Date.now());
   const occupied = Boolean(occupant);
 
@@ -31,7 +41,7 @@ export default function StatusCard({ occupant, enteredAt, note, emoji, color }: 
 
   return (
     <div
-      className={`status-card ${occupied ? "occupied" : "free"}`}
+      className={`status-card ${occupied ? "occupied" : "free"} ${poked ? "poked" : ""}`}
       style={occupied ? ({ ["--accent" as string]: color }) : undefined}
     >
       <div className="status-doorframe">
@@ -49,6 +59,9 @@ export default function StatusCard({ occupant, enteredAt, note, emoji, color }: 
           </div>
           <div className="status-timer">⏱️ {duration}</div>
           {note ? <div className="status-note">“{note}”</div> : null}
+          {photoUrl ? (
+            <img className="status-photo" src={photoUrl} alt="Tuvaletten kare" />
+          ) : null}
         </>
       ) : (
         <div className="status-sub">Tuvalet boş, buyurun 🙌</div>
