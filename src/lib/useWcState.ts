@@ -69,9 +69,14 @@ export function useWcState() {
   }, [state.occupant, cooldownActive]);
 
   // Tuvalet boşaldıysa bu cihazdaki jetonu temizle.
+  // Yalnızca durum yüklendikten sonra: aksi halde reload sırasında
+  // (henüz occupant gelmeden) içerideki kişinin jetonu boşuna silinirdi.
   useEffect(() => {
-    if (!state.occupant && tokenRef.current) { tokenRef.current = null; writeToken(null); }
-  }, [state.occupant]);
+    if (status === "ready" && !state.occupant && tokenRef.current) {
+      tokenRef.current = null;
+      writeToken(null);
+    }
+  }, [status, state.occupant]);
 
   const enter = useCallback(async (name: string) => {
     setBusy(true);
