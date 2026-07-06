@@ -10,11 +10,14 @@ export type Visit = {
 
 export type Leader = { name: string; value: number } | null;
 
+export type MemberStat = { name: string; count: number; totalSeconds: number };
+
 export type Stats = {
   totalVisits: number;
   mostVisits: Leader; // en çok giren (adet)
   longestStay: Leader; // tek seferde en uzun (saniye)
   mostTotalTime: Leader; // toplamda en çok süre (saniye)
+  perMember: MemberStat[]; // kişi başı kırılım (çoktan aza)
 };
 
 export function useVisits() {
@@ -74,11 +77,20 @@ export function useVisits() {
       return best;
     };
 
+    const perMember: MemberStat[] = [...counts.keys()]
+      .map((name) => ({
+        name,
+        count: counts.get(name) ?? 0,
+        totalSeconds: totals.get(name) ?? 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
     return {
       totalVisits: visits.length,
       mostVisits: top(counts),
       longestStay: longest,
       mostTotalTime: top(totals),
+      perMember,
     };
   }, [visits]);
 

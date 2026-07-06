@@ -26,9 +26,11 @@ export default function Chat({ messages, identity, onSend, onPickIdentity }: Pro
 
   return (
     <div className="panel chat-panel">
-      <div className="panel-title">
-        <span>💬 Sohbet</span>
-        <span className="panel-sub">tuvalettekiyle konuş</span>
+      <div className="panel-head">
+        <div>
+          <h2 className="panel-h">Sohbet</h2>
+          <p className="panel-p">Tuvalettekiyle konuş</p>
+        </div>
       </div>
 
       <div className="chat-list" ref={listRef}>
