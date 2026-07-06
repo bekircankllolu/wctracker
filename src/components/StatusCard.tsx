@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { findMember } from "../members";
 
 type Props = {
   occupant: string | null;
   enteredAt: string | null;
+  note: string | null;
+  emoji: string;
+  color: string;
 };
 
 function formatDuration(ms: number): string {
@@ -14,38 +16,42 @@ function formatDuration(ms: number): string {
   return `${min} dk ${sec.toString().padStart(2, "0")} sn`;
 }
 
-export default function StatusCard({ occupant, enteredAt }: Props) {
+export default function StatusCard({ occupant, enteredAt, note, emoji, color }: Props) {
   const [now, setNow] = useState(() => Date.now());
+  const occupied = Boolean(occupant);
 
-  // İçeride biri varken sayacı her saniye ilerlet.
   useEffect(() => {
-    if (!occupant) return;
+    if (!occupied) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [occupant]);
+  }, [occupied]);
 
-  const occupied = Boolean(occupant);
-  const member = findMember(occupant);
   const duration =
     occupied && enteredAt ? formatDuration(now - new Date(enteredAt).getTime()) : null;
 
   return (
-    <div className={`status-card ${occupied ? "occupied" : "free"}`}>
-      <div className="status-emoji" aria-hidden>
-        {occupied ? member?.emoji ?? "🚽" : "🚽"}
+    <div
+      className={`status-card ${occupied ? "occupied" : "free"}`}
+      style={occupied ? ({ ["--accent" as string]: color }) : undefined}
+    >
+      <div className="status-doorframe">
+        <div className="status-emoji" aria-hidden>
+          {occupied ? emoji : "🚽"}
+        </div>
       </div>
 
-      <div className="status-label">{occupied ? "DOLU" : "BOŞ"}</div>
+      <div className="status-label">{occupied ? "DOLU" : "MÜSAİT"}</div>
 
       {occupied ? (
         <>
           <div className="status-occupant">
-            İçeride: <strong>{occupant}</strong>
+            İçeride <strong>{occupant}</strong> var
           </div>
-          <div className="status-timer">{duration}</div>
+          <div className="status-timer">⏱️ {duration}</div>
+          {note ? <div className="status-note">“{note}”</div> : null}
         </>
       ) : (
-        <div className="status-sub">Tuvalet müsait, buyurun 🙌</div>
+        <div className="status-sub">Tuvalet boş, buyurun 🙌</div>
       )}
     </div>
   );
