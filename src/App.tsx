@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import StatusCard from "./components/StatusCard";
-import MemberGrid from "./components/MemberGrid";
+import EnterPanel from "./components/EnterPanel";
 import NotePanel from "./components/NotePanel";
 import PhotoButton from "./components/PhotoButton";
 import StatsPanel from "./components/StatsPanel";
@@ -16,7 +16,8 @@ import { useIdentity } from "./lib/useIdentity";
 import "./App.css";
 
 export default function App() {
-  const { state, status, busy, enter, exit, updateNote, updatePhoto } = useWcState();
+  const { state, status, busy, amOccupant, enter, exit, updateNote, updatePhoto } =
+    useWcState();
   const { members, addMember, updateMember, removeMember } = useMembers();
   const { stats } = useVisits();
   const { messages, send } = useMessages();
@@ -33,7 +34,6 @@ export default function App() {
   }, []);
   const sendPoke = usePoke(onPoke);
 
-  // Dürtme animasyonu/toast'unu bir süre sonra sıfırla.
   useEffect(() => {
     if (!poked) return;
     const t = setTimeout(() => setPoked(false), 700);
@@ -47,10 +47,15 @@ export default function App() {
 
   const occupied = Boolean(state.occupant);
   const current = members.find((m) => m.name === state.occupant);
-  const canPoke = occupied && identity !== state.occupant;
+  const canPoke = occupied && !amOccupant && identity !== state.occupant;
 
   function requireIdentityThen(action: (name: string) => void) {
     if (identity) action(identity);
+    else setIdentityOpen(true);
+  }
+
+  function handleEnter() {
+    if (identity) enter(identity);
     else setIdentityOpen(true);
   }
 
@@ -85,26 +90,41 @@ export default function App() {
           />
 
           {occupied ? (
-            <>
-              {canPoke ? (
-                <button
-                  className="poke-btn"
-                  onClick={() => sendPoke(identity ?? "Biri")}
-                >
-                  👉 Dürt ({state.occupant})
+            amOccupant ? (
+              // Sadece bu oturumu açan cihaz kontrol edebilir.
+              <>
+                <NotePanel note={state.note} onSave={updateNote} />
+                <PhotoButton
+                  hasPhoto={Boolean(state.photo_url)}
+                  onUploaded={updatePhoto}
+                />
+                <button className="exit-btn" disabled={busy} onClick={() => exit()}>
+                  Çıktım, tuvalet boşaldı 🎉
                 </button>
-              ) : null}
-              <NotePanel note={state.note} onSave={updateNote} />
-              <PhotoButton hasPhoto={Boolean(state.photo_url)} onUploaded={updatePhoto} />
-              <button className="exit-btn" disabled={busy} onClick={() => exit()}>
-                Çıktım, tuvalet boşaldı 🎉
-              </button>
-            </>
+              </>
+            ) : (
+              // Diğerleri değiştiremez; sadece dürtebilir.
+              <>
+                {canPoke ? (
+                  <button
+                    className="poke-btn"
+                    onClick={() => sendPoke(identity ?? "Biri")}
+                  >
+                    👉 Dürt ({state.occupant})
+                  </button>
+                ) : null}
+                <div className="occupant-hint">
+                  🔒 Durumu yalnızca <strong>{state.occupant}</strong> (giren cihaz)
+                  değiştirebilir.
+                </div>
+              </>
+            )
           ) : (
-            <MemberGrid
-              members={members}
+            <EnterPanel
+              identity={identity}
               disabled={busy}
-              onEnter={enter}
+              onEnter={handleEnter}
+              onPickIdentity={() => setIdentityOpen(true)}
               onManage={() => setRosterOpen(true)}
             />
           )}
