@@ -1,6 +1,6 @@
 import type { Stats } from "../lib/useVisits";
 import type { Member } from "../members";
-import { colorForIndex } from "../theme";
+import Avatar from "./Avatar";
 
 function fmtDuration(sec: number): string {
   const m = Math.floor(sec / 60);
@@ -9,26 +9,19 @@ function fmtDuration(sec: number): string {
   return `${m}dk ${s}sn`;
 }
 
+const MEDALS = ["🥇", "🥈", "🥉"];
+
 type Props = { stats: Stats; members: Member[] };
 
 export default function StatsPanel({ stats, members }: Props) {
-  const colorFor = (name: string, i: number) =>
-    members.find((m) => m.name === name)?.color ?? colorForIndex(i);
-
-  const bars = stats.perMember.slice(0, 5);
-  const maxCount = Math.max(1, ...bars.map((b) => b.count));
-
-  const tiles = [
-    { icon: "🏆", label: "En çok giren", leader: stats.mostVisits, fmt: (v: number) => `${v} kez` },
-    { icon: "⏳", label: "En uzun", leader: stats.longestStay, fmt: fmtDuration },
-    { icon: "📊", label: "Toplam süre", leader: stats.mostTotalTime, fmt: fmtDuration },
-  ];
+  const memberOf = (name: string) => members.find((m) => m.name === name);
+  const top = stats.perMember.slice(0, 3);
 
   return (
-    <section className="panel stats-panel">
+    <section className="panel lig-panel">
       <div className="panel-head">
         <div>
-          <h2 className="panel-h">Tuvalet Ligi</h2>
+          <h2 className="panel-h">Tuvalet Ligi 🏆</h2>
           <p className="panel-p">Kim ne kadar giriyor?</p>
         </div>
         <span className="pill-count">{stats.totalVisits} ziyaret</span>
@@ -38,34 +31,34 @@ export default function StatsPanel({ stats, members }: Props) {
         <div className="stats-empty">Henüz veri yok — ilk giren efsane olur 😄</div>
       ) : (
         <>
-          <div className="bars">
-            {bars.map((b, i) => {
-              const color = colorFor(b.name, i);
+          <div className="lig">
+            {top.map((m, i) => {
+              const mem = memberOf(m.name);
               return (
-                <div className="bar-col" key={b.name}>
-                  <div className="bar-track">
-                    <div
-                      className="bar-fill"
-                      style={{ height: `${(b.count / maxCount) * 100}%`, background: color }}
-                    >
-                      <span className="bar-value">{b.count}</span>
-                    </div>
-                  </div>
-                  <span className="bar-label">{b.name}</span>
+                <div className={`lig-row rank-${i + 1}`} key={m.name}>
+                  <span className="lig-rank">{MEDALS[i]} #{i + 1}</span>
+                  <span className="lig-name">{m.name}</span>
+                  <span className="lig-count">{m.count} kez</span>
+                  <span className="lig-avatar">
+                    <Avatar
+                      emoji={mem?.emoji ?? "🙂"}
+                      color={mem?.color ?? "#ec6a80"}
+                      avatarUrl={mem?.avatar_url}
+                      size={40}
+                    />
+                  </span>
                 </div>
               );
             })}
           </div>
 
-          <div className="stat-tiles">
-            {tiles.map((t) => (
-              <div className="stat-tile" key={t.label}>
-                <span className="tile-icon" aria-hidden>{t.icon}</span>
-                <span className="tile-label">{t.label}</span>
-                <span className="tile-name">{t.leader ? t.leader.name : "—"}</span>
-                <span className="tile-value">{t.leader ? t.fmt(t.leader.value) : ""}</span>
-              </div>
-            ))}
+          <div className="lig-foot">
+            {stats.longestStay ? (
+              <span>⏳ En uzun: <strong>{stats.longestStay.name}</strong> ({fmtDuration(stats.longestStay.value)})</span>
+            ) : null}
+            {stats.mostTotalTime ? (
+              <span>📊 Toplam lider: <strong>{stats.mostTotalTime.name}</strong> ({fmtDuration(stats.mostTotalTime.value)})</span>
+            ) : null}
           </div>
         </>
       )}
