@@ -12,12 +12,13 @@ type Props = {
   poked: boolean;
 };
 
-function formatDuration(ms: number): string {
-  const totalSec = Math.max(0, Math.floor(ms / 1000));
-  const min = Math.floor(totalSec / 60);
-  const sec = totalSec % 60;
-  if (min === 0) return `${sec} sn`;
-  return `${min} dk ${sec.toString().padStart(2, "0")} sn`;
+const pad = (n: number) => n.toString().padStart(2, "0");
+
+function clock(sec: number): string {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
 }
 
 export default function StatusCard({
@@ -39,38 +40,42 @@ export default function StatusCard({
     return () => clearInterval(id);
   }, [occupied]);
 
-  const duration =
-    occupied && enteredAt ? formatDuration(now - new Date(enteredAt).getTime()) : null;
+  if (!occupied) {
+    return (
+      <div className="status-hero free">
+        <div className="hero-emoji-wrap">
+          <span className="hero-emoji" aria-hidden>🚽</span>
+        </div>
+        <div className="hero-title">MÜSAİT</div>
+        <div className="hero-sub">Tuvalet boş, buyurun 🙌</div>
+      </div>
+    );
+  }
+
+  const elapsedSec = enteredAt
+    ? Math.max(0, Math.floor((now - new Date(enteredAt).getTime()) / 1000))
+    : 0;
+  const ringAngle = ((elapsedSec % 60) / 60) * 360;
 
   return (
-    <div
-      className={`status-card ${occupied ? "occupied" : "free"} ${poked ? "poked" : ""}`}
-      style={occupied ? ({ ["--accent" as string]: color }) : undefined}
-    >
-      <div className="status-doorframe">
-        {occupied ? (
-          <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={104} shape="rounded" />
-        ) : (
-          <div className="status-emoji" aria-hidden>🚽</div>
-        )}
+    <div className={`status-hero occupied ${poked ? "poked" : ""}`}>
+      <div
+        className="hero-avatar-ring"
+        style={{
+          background: `conic-gradient(var(--cream) ${ringAngle}deg, rgba(255,255,255,0.28) 0)`,
+        }}
+      >
+        <div className="hero-avatar-inner">
+          <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={92} />
+        </div>
       </div>
 
-      <div className="status-label">{occupied ? "DOLU" : "MÜSAİT"}</div>
+      <div className="hero-name">{occupant}</div>
+      <div className="hero-clock" aria-live="polite">{clock(elapsedSec)}</div>
+      <div className="hero-sub">şu kadar süredir tuvalette 🚽</div>
 
-      {occupied ? (
-        <>
-          <div className="status-occupant">
-            İçeride <strong>{occupant}</strong> var
-          </div>
-          <div className="status-timer">⏱️ {duration}</div>
-          {note ? <div className="status-note">“{note}”</div> : null}
-          {photoUrl ? (
-            <img className="status-photo" src={photoUrl} alt="Tuvaletten kare" />
-          ) : null}
-        </>
-      ) : (
-        <div className="status-sub">Tuvalet boş, buyurun 🙌</div>
-      )}
+      {note ? <div className="hero-note">“{note}”</div> : null}
+      {photoUrl ? <img className="hero-photo" src={photoUrl} alt="Tuvaletten kare" /> : null}
     </div>
   );
 }
