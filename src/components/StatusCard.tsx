@@ -1,17 +1,18 @@
 import RadialTimer from "./RadialTimer";
+import { useCountdown } from "../lib/timers";
 import type { Phase } from "../lib/useWcState";
 
 type Props = {
   phase: Phase;
   occupant: string | null;
-  elapsedSec: number;
+  enteredAt: string | null;
   note: string | null;
   photoUrl: string | null;
   emoji: string;
   color: string;
   avatarUrl: string | null;
   poked: boolean;
-  cooldownMs: number;
+  cooldownUntil: string | null;
   multiplier: number;
 };
 
@@ -22,8 +23,10 @@ const mmss = (ms: number) => {
 };
 
 export default function StatusCard({
-  phase, occupant, elapsedSec, note, photoUrl, emoji, color, avatarUrl, poked, cooldownMs, multiplier,
+  phase, occupant, enteredAt, note, photoUrl, emoji, color, avatarUrl, poked, cooldownUntil, multiplier,
 }: Props) {
+  const cooldownMs = useCountdown(phase === "cooldown" ? cooldownUntil : null);
+
   if (phase === "cooldown") {
     return (
       <div className="cd-card">
@@ -48,9 +51,9 @@ export default function StatusCard({
 
   return (
     <div className={`occ-wrap ${poked ? "poked" : ""}`}>
-      <RadialTimer seconds={elapsedSec} name={occupant ?? ""} emoji={emoji} color={color} avatarUrl={avatarUrl} />
+      <RadialTimer enteredAt={enteredAt} name={occupant ?? ""} emoji={emoji} color={color} avatarUrl={avatarUrl} />
       {note ? <div className="note-pill">“{note}”</div> : null}
-      {photoUrl ? <img className="occ-photo" src={photoUrl} alt="Tuvaletten kare" /> : null}
+      {photoUrl ? <img className="occ-photo" src={photoUrl} alt="Tuvaletten kare" loading="lazy" /> : null}
     </div>
   );
 }

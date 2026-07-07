@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TopBar from "./components/TopBar";
 import StatusCard from "./components/StatusCard";
 import StatusBanner from "./components/StatusBanner";
@@ -13,6 +13,7 @@ import Calendar from "./components/Calendar";
 import RosterEditor from "./components/RosterEditor";
 import IdentityPicker from "./components/IdentityPicker";
 import BottomNav, { type Tab } from "./components/BottomNav";
+import Skeleton from "./components/Skeleton";
 import { useWcState } from "./lib/useWcState";
 import { useMembers } from "./lib/useMembers";
 import { useVisits } from "./lib/useVisits";
@@ -20,6 +21,14 @@ import { useMessages } from "./lib/useMessages";
 import { usePoke } from "./lib/usePoke";
 import { useIdentity } from "./lib/useIdentity";
 import "./App.css";
+
+function vibrate(pattern: number | number[]) {
+  try {
+    navigator.vibrate?.(pattern);
+  } catch {
+    /* desteklenmiyorsa yoksay */
+  }
+}
 
 const TAB_META: Record<Tab, { icon: string; title: string }> = {
   durum: { icon: "✨", title: "Tuvalet Takip" },
@@ -29,7 +38,7 @@ const TAB_META: Record<Tab, { icon: string; title: string }> = {
 
 export default function App() {
   const {
-    state, status, busy, phase, amOccupant, cooldownMs, now,
+    state, status, busy, phase, amOccupant,
     enter, exit, updateNote, updatePhoto, updateSmell, updatePaper,
   } = useWcState();
   const { members, addMember, updateMember, removeMember } = useMembers();
@@ -46,6 +55,7 @@ export default function App() {
   const onPoke = useCallback((from: string) => {
     setPoked(true);
     setPokeToast(`${from} dürttü! 👉`);
+    vibrate([30, 50, 30]);
   }, []);
   const sendPoke = usePoke(onPoke);
 
@@ -63,11 +73,28 @@ export default function App() {
   const current = members.find((m) => m.name === state.occupant);
   const me = members.find((m) => m.name === identity);
   const canPoke = phase === "occupied" && !amOccupant && identity !== state.occupant;
-  const elapsedSec = state.entered_at
-    ? Math.max(0, Math.floor((now - new Date(state.entered_at).getTime()) / 1000))
-    : 0;
 
-  const handleEnter = () => (identity ? enter(identity) : setIdentityOpen(true));
+  // Biri girince/çıkınca herkese mini toast + hafif titreşim.
+  const prevOcc = useRef<string | null | undefined>(undefined);
+  useEffect(() => {
+    if (status !== "ready") return;
+    const prev = prevOcc.current;
+    if (prev !== undefined && prev !== state.occupant) {
+      if (state.occupant && state.occupant !== identity) {
+        setPokeToast(`${state.occupant} tuvalete girdi 🚽`);
+        vibrate(25);
+      } else if (!state.occupant && prev) {
+        setPokeToast("Tuvalet boşaldı ✅");
+      }
+    }
+    prevOcc.current = state.occupant;
+  }, [status, state.occupant, identity]);
+
+  const handleEnter = () => {
+    vibrate(15);
+    if (identity) enter(identity);
+    else setIdentityOpen(true);
+  };
 
   const avatarBtn = (
     <button
@@ -104,24 +131,24 @@ export default function App() {
       {status === "error" ? (
         <div className="notice error">Bağlantı kurulamadı. Supabase ayarlarını kontrol edin.</div>
       ) : status === "loading" ? (
-        <div className="notice">Durum yükleniyor…</div>
+        <Skeleton />
       ) : (
         <main className="app-main" key={tab}>
           {tab === "durum" ? (
             <>
-              {phase === "occupied" ? <StatusBanner occupant={state.occupant} elapsedSec={elapsedSec} /> : null}
+              {phase === "occupied" ? <StatusBanner occupant={state.occupant} enteredAt={state.entered_at} /> : null}
 
               <StatusCard
                 phase={phase}
                 occupant={state.occupant}
-                elapsedSec={elapsedSec}
+                enteredAt={state.entered_at}
                 note={state.note}
                 photoUrl={state.photo_url}
                 emoji={current?.emoji ?? "🚽"}
                 color={current?.color ?? "#f2711c"}
                 avatarUrl={current?.avatar_url ?? null}
                 poked={poked}
-                cooldownMs={cooldownMs}
+                cooldownUntil={state.cooldown_until}
                 multiplier={state.smell_multiplier}
               />
 
@@ -133,12 +160,12 @@ export default function App() {
                 amOccupant ? (
                   <>
                     <PhotoButton hasPhoto={Boolean(state.photo_url)} onUploaded={updatePhoto} />
-                    <button className="exit-btn" disabled={busy} onClick={() => exit()}>Çıktım, tuvalet boşaldı 🎉</button>
+                    <button className="exit-btn" disabled={busy} onClick={() => { vibrate(20); exit(); }}>Çıktım, tuvalet boşaldı 🎉</button>
                   </>
                 ) : (
                   <>
                     {canPoke ? (
-                      <button className="poke-btn" onClick={() => sendPoke(identity ?? "Biri")}>👉 Dürt ({state.occupant})</button>
+                      <button className="poke-btn" onClick={() => { vibrate(15); sendPoke(identity ?? "Biri"); }}>👉 Dürt ({state.occupant})</button>
                     ) : null}
                     <div className="lock-hint">🔒 Durumu yalnızca <strong>{state.occupant}</strong> (giren cihaz) değiştirebilir.</div>
                   </>

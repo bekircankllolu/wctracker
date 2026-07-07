@@ -1,7 +1,8 @@
 import Avatar from "./Avatar";
+import { useElapsed } from "../lib/timers";
 
 type Props = {
-  seconds: number;
+  enteredAt: string | null;
   name: string;
   emoji: string;
   color: string;
@@ -18,7 +19,8 @@ function clock(sec: number): string {
 
 const CX = 120, CY = 120, R_IN = 88, R_OUT = 104, TICKS = 60;
 
-export default function RadialTimer({ seconds, name, emoji, color, avatarUrl }: Props) {
+export default function RadialTimer({ enteredAt, name, emoji, color, avatarUrl }: Props) {
+  const seconds = useElapsed(enteredAt);
   const active = seconds % 60;
   return (
     <div className="dial">
