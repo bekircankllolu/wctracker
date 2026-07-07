@@ -35,7 +35,7 @@ export function useWcState() {
   const [state, setState] = useState<WcState>(EMPTY);
   const [status, setStatus] = useState<Status>("loading");
   const [busy, setBusy] = useState(false);
-  const [now, setNow] = useState(() => Date.now());
+  const [, bumpPhase] = useState(0); // sadece cooldown bittiğinde fazı tazelemek için
   const tokenRef = useRef<string | null>(readToken());
 
   useEffect(() => {
@@ -58,15 +58,14 @@ export function useWcState() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // Sayaç/geri sayım için tik (sadece dolu veya havalandırma sürerken).
-  const cooldownActive = Boolean(
-    !state.occupant && state.cooldown_until && new Date(state.cooldown_until).getTime() > Date.now(),
-  );
+  // Havalandırma bitince fazı tazelemek için tek timeout (saniyelik render yok).
   useEffect(() => {
-    if (!state.occupant && !cooldownActive) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [state.occupant, cooldownActive]);
+    if (state.occupant || !state.cooldown_until) return;
+    const ms = new Date(state.cooldown_until).getTime() - Date.now();
+    if (ms <= 0) return;
+    const id = setTimeout(() => bumpPhase((t) => t + 1), ms + 250);
+    return () => clearTimeout(id);
+  }, [state.occupant, state.cooldown_until]);
 
   // Tuvalet boşaldıysa bu cihazdaki jetonu temizle.
   // Yalnızca durum yüklendikten sonra: aksi halde reload sırasında
@@ -139,14 +138,16 @@ export function useWcState() {
     await supabase.from("wc_state").update({ paper_level: v }).eq("id", ROW_ID);
   }, []);
 
-  const cooldownMs = state.cooldown_until ? new Date(state.cooldown_until).getTime() - now : 0;
-  const inCooldown = !state.occupant && cooldownMs > 0;
+  const inCooldown =
+    !state.occupant &&
+    Boolean(state.cooldown_until) &&
+    new Date(state.cooldown_until as string).getTime() > Date.now();
   const phase: Phase = state.occupant ? "occupied" : inCooldown ? "cooldown" : "free";
   const amOccupant =
     Boolean(state.occupant) && state.occupant_token != null && state.occupant_token === tokenRef.current;
 
   return {
-    state, status, busy, phase, amOccupant, cooldownMs, now,
+    state, status, busy, phase, amOccupant,
     enter, exit, updateNote, updatePhoto, updateSmell, updatePaper,
   };
 }
