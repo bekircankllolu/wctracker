@@ -6,9 +6,16 @@ export type Message = {
   sender: string;
   body: string;
   created_at: string;
+  pending?: boolean; // optimistik: henüz sunucuya yazılmadı
+  failed?: boolean; // gönderilemedi
 };
 
 export const CHAT_MAX = 100;
+const SELECT = "id, sender, body, created_at";
+
+function tempId() {
+  return `temp-${(crypto as { randomUUID?: () => string }).randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
+}
 
 export function useMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -17,7 +24,7 @@ export function useMessages() {
     let active = true;
     supabase
       .from("messages")
-      .select("id, sender, body, created_at")
+      .select(SELECT)
       .order("created_at", { ascending: false })
       .limit(30)
       .then(({ data }) => {
@@ -38,6 +45,15 @@ export function useMessages() {
           setMessages((prev) => {
             const msg = payload.new as Message;
             if (prev.some((m) => m.id === msg.id)) return prev;
+            // Kendi optimistik mesajımızın echo'su geldiyse onu gerçekle değiştir.
+            const idx = prev.findIndex(
+              (m) => m.pending && m.sender === msg.sender && m.body === msg.body,
+            );
+            if (idx >= 0) {
+              const copy = prev.slice();
+              copy[idx] = msg;
+              return copy;
+            }
             return [...prev, msg].slice(-50);
           });
         },
@@ -51,7 +67,35 @@ export function useMessages() {
   const send = useCallback(async (sender: string, body: string) => {
     const trimmed = body.trim().slice(0, CHAT_MAX);
     if (!trimmed) return;
-    await supabase.from("messages").insert({ sender, body: trimmed });
+
+    // 1) Anında ekranda göster (optimistik).
+    const id = tempId();
+    const optimistic: Message = {
+      id,
+      sender,
+      body: trimmed,
+      created_at: new Date().toISOString(),
+      pending: true,
+    };
+    setMessages((prev) => [...prev, optimistic].slice(-50));
+
+    // 2) Sunucuya yaz, dönen gerçek satırla uzlaştır.
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({ sender, body: trimmed })
+      .select(SELECT)
+      .single();
+
+    setMessages((prev) => {
+      if (error || !data) {
+        return prev.map((m) => (m.id === id ? { ...m, pending: false, failed: true } : m));
+      }
+      const real = data as Message;
+      const withoutTemp = prev.filter((m) => m.id !== id);
+      // Realtime echo bizden önce eklediyse tekrar ekleme.
+      if (withoutTemp.some((m) => m.id === real.id)) return withoutTemp;
+      return [...withoutTemp, real];
+    });
   }, []);
 
   return { messages, send };

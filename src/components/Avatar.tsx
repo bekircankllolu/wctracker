@@ -18,7 +18,16 @@ export default function Avatar({
   const style = { width: size, height: size, borderRadius: radius } as const;
 
   if (avatarUrl) {
-    return <img className="avatar-img" style={style} src={avatarUrl} alt="" />;
+    return (
+      <img
+        className="avatar-img"
+        style={style}
+        src={avatarUrl}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    );
   }
   return (
     <span
