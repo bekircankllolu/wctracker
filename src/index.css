@@ -9,12 +9,18 @@
   --ink-mid: #6b675f;
   --line: #ece9e2;
 
+  /* Nötr yüzeyler — karanlık modda da okunur kalması için tema değişkeni */
+  --muted: #f2efe8;
+  --muted-2: #e9e5db;
+
   --orange: #f2711c;
   --orange-deep: #e0620f;
   --orange-soft: #fde6d6;
 
   --green: #3f9e56;
   --green-soft: #e3f3e6;
+  --red: #d63b2e;
+  --red-soft: #fbe0dd;
   --purple: #8b5cf6;
 
   --gold: #f6c445;
@@ -42,12 +48,15 @@
     --bg: #171613;
     --card: #201f1b;
     --ink: #f4f1ea;
-    --ink-2: #f4f1ea;
+    --ink-2: #0d0c0b;
     --ink-dim: #8f8a80;
     --ink-mid: #b4afa4;
     --line: #2c2a24;
-    --orange-soft: #35251733;
-    --green-soft: rgba(63, 158, 86, 0.18);
+    --muted: #2b2925;
+    --muted-2: #34302a;
+    --orange-soft: rgba(242, 113, 28, 0.22);
+    --green-soft: rgba(63, 158, 86, 0.2);
+    --red-soft: rgba(214, 59, 46, 0.24);
     --shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
     --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.34);
     color-scheme: dark;
