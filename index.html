@@ -3,9 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#171613" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f4ef" />
     <title>WC Tracker 🚽</title>
+
+    <!-- Tema tercihini boyamadan önce uygula (FOUC önler). -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("wc-theme") || "system";
+          var dark = t === "dark" || (t === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", dark ? "#171613" : "#f6f4ef");
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Fontu erken keşfet: preconnect + doğrudan stylesheet linki
          (CSS içindeki @import geç indiriliyordu, metin gecikmeli görünüyordu). -->
