@@ -12,8 +12,10 @@ import Chat from "./components/Chat";
 import Calendar from "./components/Calendar";
 import RosterEditor from "./components/RosterEditor";
 import IdentityPicker from "./components/IdentityPicker";
+import Menu from "./components/Menu";
 import BottomNav, { type Tab } from "./components/BottomNav";
 import Skeleton from "./components/Skeleton";
+import { useTheme } from "./lib/useTheme";
 import { useWcState } from "./lib/useWcState";
 import { useMembers } from "./lib/useMembers";
 import { useVisits } from "./lib/useVisits";
@@ -45,8 +47,10 @@ export default function App() {
   const { stats, statsWeek, visits } = useVisits();
   const { messages, send } = useMessages();
   const { identity, setIdentity } = useIdentity();
+  const { theme, setTheme } = useTheme();
 
   const [tab, setTab] = useState<Tab>("durum");
+  const [menuOpen, setMenuOpen] = useState(false);
   const [rosterOpen, setRosterOpen] = useState(false);
   const [identityOpen, setIdentityOpen] = useState(false);
   const [poked, setPoked] = useState(false);
@@ -125,7 +129,7 @@ export default function App() {
         icon={TAB_META[tab].icon}
         title={TAB_META[tab].title}
         right={rightSlot}
-        onMenu={() => setRosterOpen(true)}
+        onMenu={() => setMenuOpen(true)}
       />
 
       {status === "error" ? (
@@ -196,6 +200,17 @@ export default function App() {
 
       {pokeToast ? <div className="poke-toast">{pokeToast}</div> : null}
 
+      {menuOpen ? (
+        <Menu
+          theme={theme}
+          onTheme={setTheme}
+          me={me}
+          memberCount={members.length}
+          onManageRoster={() => setRosterOpen(true)}
+          onPickIdentity={() => setIdentityOpen(true)}
+          onClose={() => setMenuOpen(false)}
+        />
+      ) : null}
       {rosterOpen ? (
         <RosterEditor members={members} onClose={() => setRosterOpen(false)} onAdd={addMember} onUpdate={updateMember} onRemove={removeMember} />
       ) : null}

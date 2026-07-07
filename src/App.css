@@ -280,6 +280,22 @@
 .sheet-head h2 { font-size: 1.35rem; font-weight: 800; }
 .sheet-close { background: var(--card); border: 1px solid var(--line); width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; }
 .sheet-hint { color: var(--ink-dim); font-weight: 500; margin-bottom: 14px; font-size: 0.9rem; }
+
+/* Menü çekmecesi */
+.menu-section-label { color: var(--ink-dim); font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 16px 2px 8px; }
+.theme-seg { display: flex; gap: 8px; }
+.theme-opt { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--muted); border: 2px solid transparent; border-radius: var(--radius-sm); padding: 12px 6px; font-weight: 600; font-size: 0.86rem; color: var(--ink-mid); transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease; }
+.theme-opt .theme-ico { font-size: 1.4rem; }
+.theme-opt.on { background: var(--orange-soft); border-color: var(--orange); color: var(--ink); }
+.menu-row { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; box-shadow: var(--shadow-sm); text-align: left; }
+.menu-row:active { transform: scale(0.99); }
+.menu-row-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.menu-row-emoji { width: 36px; height: 36px; border-radius: 50%; background: var(--muted); display: grid; place-items: center; font-size: 1.1rem; flex-shrink: 0; }
+.menu-row-text { display: flex; flex-direction: column; min-width: 0; }
+.menu-row-text strong { font-size: 1rem; font-weight: 700; color: var(--ink); }
+.menu-row-text small { color: var(--ink-dim); font-size: 0.8rem; font-weight: 500; }
+.menu-row-arrow { color: var(--ink-dim); font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+.menu-foot { text-align: center; color: var(--ink-dim); font-size: 0.78rem; font-weight: 500; margin-top: 20px; }
 .roster-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .roster-row { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; box-shadow: var(--shadow-sm); }
 .roster-name { flex: 1; font-weight: 600; font-size: 1.02rem; }
