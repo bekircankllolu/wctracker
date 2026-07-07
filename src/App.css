@@ -177,6 +177,21 @@
 .msg-sender { font-size: 0.72rem; font-weight: 700; }
 .msg-body { font-size: 0.92rem; color: var(--ink); font-weight: 500; word-break: break-word; }
 .msg-time { color: var(--ink-dim); font-size: 0.68rem; font-weight: 500; margin-bottom: 2px; }
+
+/* Sıra (kuyruk) */
+.queue-card { display: flex; flex-direction: column; gap: 12px; }
+.queue-head { display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 1.02rem; }
+.queue-myplace { color: var(--orange); font-size: 0.86rem; font-weight: 700; }
+.queue-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.queue-item { display: flex; align-items: center; gap: 10px; background: var(--muted); border-radius: var(--radius-xs); padding: 7px 10px; }
+.queue-item.mine { background: var(--orange-soft); }
+.queue-rank { width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: var(--card); color: var(--ink-mid); font-size: 0.78rem; font-weight: 800; display: grid; place-items: center; }
+.queue-item.mine .queue-rank { background: var(--orange); color: #fff; }
+.queue-name { font-weight: 600; font-size: 0.96rem; }
+.queue-empty, .queue-hint { color: var(--ink-dim); font-weight: 500; font-size: 0.9rem; text-align: center; padding: 4px; }
+.queue-btn { width: 100%; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; }
+.queue-btn.join { background: var(--orange); color: #fff; }
+.queue-btn.leave { background: var(--muted); color: var(--ink-mid); }
 .msg-row.pending { opacity: 0.6; }
 .msg-row.failed .bubble { background: var(--red-soft); }
 .msg-row.failed .msg-time { color: var(--red); }

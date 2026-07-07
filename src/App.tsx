@@ -12,6 +12,7 @@ import Chat from "./components/Chat";
 import Calendar from "./components/Calendar";
 import RosterEditor from "./components/RosterEditor";
 import IdentityPicker from "./components/IdentityPicker";
+import QueuePanel from "./components/QueuePanel";
 import Menu from "./components/Menu";
 import BottomNav, { type Tab } from "./components/BottomNav";
 import Skeleton from "./components/Skeleton";
@@ -20,6 +21,7 @@ import { useWcState } from "./lib/useWcState";
 import { useMembers } from "./lib/useMembers";
 import { useVisits } from "./lib/useVisits";
 import { useMessages } from "./lib/useMessages";
+import { useQueue } from "./lib/useQueue";
 import { usePoke } from "./lib/usePoke";
 import { useIdentity } from "./lib/useIdentity";
 import "./App.css";
@@ -46,6 +48,7 @@ export default function App() {
   const { members, addMember, updateMember, removeMember } = useMembers();
   const { stats, statsWeek, visits } = useVisits();
   const { messages, send } = useMessages();
+  const { queue, join: joinQueue, leave: leaveQueue } = useQueue();
   const { identity, setIdentity } = useIdentity();
   const { theme, setTheme } = useTheme();
 
@@ -78,6 +81,11 @@ export default function App() {
   const me = members.find((m) => m.name === identity);
   const canPoke = phase === "occupied" && !amOccupant && identity !== state.occupant;
 
+  // "Sıra sende" bildirimini transisyon anında bir kez göstermek için kuyruğun
+  // başını referansta tut (efekt yalnızca occupant değişince çalışsın diye).
+  const queueHeadRef = useRef<string | null>(null);
+  queueHeadRef.current = queue[0]?.member_name ?? null;
+
   // Biri girince/çıkınca herkese mini toast + hafif titreşim.
   const prevOcc = useRef<string | null | undefined>(undefined);
   useEffect(() => {
@@ -88,7 +96,13 @@ export default function App() {
         setPokeToast(`${state.occupant} tuvalete girdi 🚽`);
         vibrate(25);
       } else if (!state.occupant && prev) {
-        setPokeToast("Tuvalet boşaldı ✅");
+        // Tuvalet boşaldı: sıradaki kişi bensem özel bildirim.
+        if (identity && queueHeadRef.current === identity) {
+          setPokeToast("Sıra sende! 🚽 Hadi bakalım");
+          vibrate([40, 60, 40]);
+        } else {
+          setPokeToast("Tuvalet boşaldı ✅");
+        }
       }
     }
     prevOcc.current = state.occupant;
@@ -96,8 +110,10 @@ export default function App() {
 
   const handleEnter = () => {
     vibrate(15);
-    if (identity) enter(identity);
-    else setIdentityOpen(true);
+    if (identity) {
+      enter(identity);
+      leaveQueue(identity); // girince kuyruktan düş
+    } else setIdentityOpen(true);
   };
 
   const avatarBtn = (
@@ -159,6 +175,17 @@ export default function App() {
               {phase === "occupied" && amOccupant ? <NotePanel note={state.note} onSave={updateNote} /> : null}
 
               {meters}
+
+              {phase !== "free" ? (
+                <QueuePanel
+                  queue={queue}
+                  members={members}
+                  identity={identity}
+                  occupant={state.occupant}
+                  onJoin={() => { if (identity) { vibrate(15); joinQueue(identity); } }}
+                  onLeave={() => { if (identity) leaveQueue(identity); }}
+                />
+              ) : null}
 
               {phase === "occupied" ? (
                 amOccupant ? (
