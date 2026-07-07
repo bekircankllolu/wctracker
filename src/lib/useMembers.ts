@@ -22,20 +22,36 @@ export function useMembers() {
     fetchMembers();
   }, [fetchMembers]);
 
-  // Kadrodaki değişiklikler tüm cihazlara anında yansısın.
+  // Kadrodaki değişiklikler tüm cihazlara anında yansısın — tüm listeyi
+  // yeniden çekmek yerine sadece değişen satırı uygula (daha az istek/render).
   useEffect(() => {
+    const bySort = (a: Member, b: Member) => a.sort_order - b.sort_order;
     const channel = supabase
       .channel("members_changes")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "members" },
-        () => fetchMembers(),
+        (payload) => {
+          setMembers((prev) => {
+            if (payload.eventType === "DELETE") {
+              const oldId = (payload.old as { id?: string }).id;
+              return prev.filter((m) => m.id !== oldId);
+            }
+            const row = payload.new as Member;
+            if (payload.eventType === "INSERT") {
+              if (prev.some((m) => m.id === row.id)) return prev;
+              return [...prev, row].sort(bySort);
+            }
+            // UPDATE
+            return prev.map((m) => (m.id === row.id ? row : m)).sort(bySort);
+          });
+        },
       )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchMembers]);
+  }, []);
 
   const addMember = useCallback(
     async (

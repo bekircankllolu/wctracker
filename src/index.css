@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+/* Inter fontu index.html'de <link> ile erken yükleniyor (daha hızlı metin). */
 
 :root {
   --bg: #f6f4ef;

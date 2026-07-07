@@ -43,12 +43,17 @@ export default function Chat({ messages, identity, onSend, onPickIdentity }: Pro
           <div className="chat-empty">İlk mesajı sen yaz ✍️</div>
         ) : (
           messages.map((m) => (
-            <div className={`msg-row ${m.sender === identity ? "mine" : ""}`} key={m.id}>
+            <div
+              className={`msg-row ${m.sender === identity ? "mine" : ""} ${m.pending ? "pending" : ""} ${m.failed ? "failed" : ""}`}
+              key={m.id}
+            >
               <div className="bubble">
                 <span className="msg-sender" style={{ color: senderColor(m.sender) }}>{m.sender}</span>
                 <span className="msg-body">{m.body}</span>
               </div>
-              <span className="msg-time">{hhmm(m.created_at)}</span>
+              <span className="msg-time">
+                {m.failed ? "gönderilemedi ⚠️" : m.pending ? "gönderiliyor…" : hhmm(m.created_at)}
+              </span>
             </div>
           ))
         )}
