@@ -24,6 +24,7 @@ import { useMembers } from "./lib/useMembers";
 import { useVisits } from "./lib/useVisits";
 import { useMessages } from "./lib/useMessages";
 import { useQueue } from "./lib/useQueue";
+import { usePush } from "./lib/usePush";
 import { usePoke } from "./lib/usePoke";
 import { useIdentity } from "./lib/useIdentity";
 import "./App.css";
@@ -51,6 +52,7 @@ export default function App() {
   const { stats, statsWeek, visits } = useVisits();
   const { messages, send } = useMessages();
   const { queue, join: joinQueue, leave: leaveQueue } = useQueue();
+  const push = usePush();
   const { identity, setIdentity } = useIdentity();
   const { theme, setTheme } = useTheme();
 
@@ -141,6 +143,38 @@ export default function App() {
     } else setIdentityOpen(true);
   };
 
+  // Çıkış: durumu boşalt + diğer cihazlara push gönder (uygulama kapalı olsa da).
+  const handleExit = async () => {
+    vibrate(20);
+    const head = queue[0]?.member_name ?? null;
+    await exit();
+    if (head) {
+      push.sendPush({
+        onlyMember: head,
+        title: "Sıra sende! 🚽",
+        body: "Tuvalet boşaldı, sıra sana geldi.",
+        tag: "wc-turn",
+      });
+    }
+    push.sendPush({
+      title: "Tuvalet boşaldı ✅",
+      body: "Tuvalet müsait 🙌",
+      tag: "wc-free",
+      excludeEndpoint: push.endpoint ?? undefined,
+      excludeMember: head ?? undefined,
+    });
+  };
+
+  const togglePush = () => {
+    if (push.enabled) {
+      push.disable();
+    } else if (!identity) {
+      setIdentityOpen(true); // önce kimlik seç ki "sıra sende" hedeflenebilsin
+    } else {
+      push.enable(identity);
+    }
+  };
+
   const avatarBtn = (
     <button
       className="avatar-chip"
@@ -217,7 +251,7 @@ export default function App() {
                 amOccupant ? (
                   <>
                     <PhotoButton hasPhoto={Boolean(state.photo_url)} onUploaded={updatePhoto} />
-                    <button className="exit-btn" disabled={busy} onClick={() => { vibrate(20); exit(); }}>Çıktım, tuvalet boşaldı 🎉</button>
+                    <button className="exit-btn" disabled={busy} onClick={handleExit}>Çıktım, tuvalet boşaldı 🎉</button>
                   </>
                 ) : (
                   <>
@@ -260,6 +294,8 @@ export default function App() {
           onTheme={setTheme}
           me={me}
           memberCount={members.length}
+          push={{ supported: push.supported, enabled: push.enabled, busy: push.busy }}
+          onTogglePush={togglePush}
           onManageRoster={() => setRosterOpen(true)}
           onPickIdentity={() => setIdentityOpen(true)}
           onClose={() => setMenuOpen(false)}

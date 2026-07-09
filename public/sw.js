@@ -18,6 +18,38 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Web Push: sunucudan gelen bildirimi göster.
+self.addEventListener("push", (event) => {
+  let data = { title: "WC Tracker 🚽", body: "", tag: "wc" };
+  try {
+    if (event.data) data = { ...data, ...event.data.json() };
+  } catch (e) {
+    /* düz metin gelirse yoksay */
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      tag: data.tag,
+      icon: "/icon-192.png",
+      badge: "/icon-192.png",
+      vibrate: [40, 60, 40],
+    }),
+  );
+});
+
+// Bildirime tıklayınca uygulamayı öne getir ya da aç.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const c of list) {
+        if ("focus" in c) return c.focus();
+      }
+      return self.clients.openWindow("/");
+    }),
+  );
+});
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
