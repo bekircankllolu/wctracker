@@ -13,6 +13,8 @@ import Calendar from "./components/Calendar";
 import RosterEditor from "./components/RosterEditor";
 import IdentityPicker from "./components/IdentityPicker";
 import QueuePanel from "./components/QueuePanel";
+import LongStayBadge from "./components/LongStayBadge";
+import Confetti from "./components/Confetti";
 import Menu from "./components/Menu";
 import BottomNav, { type Tab } from "./components/BottomNav";
 import Skeleton from "./components/Skeleton";
@@ -58,6 +60,7 @@ export default function App() {
   const [identityOpen, setIdentityOpen] = useState(false);
   const [poked, setPoked] = useState(false);
   const [pokeToast, setPokeToast] = useState<string | null>(null);
+  const [celebrate, setCelebrate] = useState(false);
 
   const onPoke = useCallback((from: string) => {
     setPoked(true);
@@ -76,6 +79,28 @@ export default function App() {
     const t = setTimeout(() => setPokeToast(null), 2200);
     return () => clearTimeout(t);
   }, [pokeToast]);
+
+  // Yeni tuvalet rekoru kırılınca (herkeste) kutlama: konfeti + toast.
+  const prevRecord = useRef<number | null>(null);
+  useEffect(() => {
+    const rec = stats.longestStay;
+    if (!rec) return;
+    const prev = prevRecord.current;
+    if (prev !== null && rec.value > prev) {
+      const mins = Math.floor(rec.value / 60);
+      const secs = rec.value % 60;
+      const pretty = mins > 0 ? `${mins} dk ${secs} sn` : `${secs} sn`;
+      setPokeToast(`🏆 Yeni rekor! ${rec.name} — ${pretty}`);
+      setCelebrate(true);
+      vibrate([30, 40, 30, 40, 60]);
+    }
+    prevRecord.current = rec.value;
+  }, [stats.longestStay]);
+  useEffect(() => {
+    if (!celebrate) return;
+    const t = setTimeout(() => setCelebrate(false), 2600);
+    return () => clearTimeout(t);
+  }, [celebrate]);
 
   const current = members.find((m) => m.name === state.occupant);
   const me = members.find((m) => m.name === identity);
@@ -157,6 +182,7 @@ export default function App() {
           {tab === "durum" ? (
             <>
               {phase === "occupied" ? <StatusBanner occupant={state.occupant} enteredAt={state.entered_at} /> : null}
+              {phase === "occupied" ? <LongStayBadge enteredAt={state.entered_at} /> : null}
 
               <StatusCard
                 phase={phase}
@@ -225,6 +251,7 @@ export default function App() {
 
       <BottomNav active={tab} onChange={setTab} />
 
+      {celebrate ? <Confetti /> : null}
       {pokeToast ? <div className="poke-toast">{pokeToast}</div> : null}
 
       {menuOpen ? (
