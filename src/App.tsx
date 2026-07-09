@@ -243,7 +243,7 @@ export default function App() {
           ) : (
             <>
               <Calendar members={members} visits={visits} />
-              <StatsPanel stats={stats} statsWeek={statsWeek} members={members} />
+              <StatsPanel stats={stats} statsWeek={statsWeek} members={members} visits={visits} />
             </>
           )}
         </main>
