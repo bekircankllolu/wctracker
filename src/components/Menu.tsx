@@ -7,6 +7,8 @@ type Props = {
   onTheme: (choice: ThemeChoice) => void;
   me: Member | undefined;
   memberCount: number;
+  push: { supported: boolean; enabled: boolean; busy: boolean };
+  onTogglePush: () => void;
   onManageRoster: () => void;
   onPickIdentity: () => void;
   onClose: () => void;
@@ -19,7 +21,7 @@ const THEMES: { key: ThemeChoice; label: string; icon: string }[] = [
 ];
 
 export default function Menu({
-  theme, onTheme, me, memberCount, onManageRoster, onPickIdentity, onClose,
+  theme, onTheme, me, memberCount, push, onTogglePush, onManageRoster, onPickIdentity, onClose,
 }: Props) {
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -43,6 +45,22 @@ export default function Menu({
             </button>
           ))}
         </div>
+
+        <div className="menu-section-label">Bildirimler</div>
+        {push.supported ? (
+          <button className="menu-row" onClick={onTogglePush} disabled={push.busy}>
+            <span className="menu-row-left">
+              <span className="menu-row-emoji" aria-hidden>{push.enabled ? "🔔" : "🔕"}</span>
+              <span className="menu-row-text">
+                <strong>{push.enabled ? "Bildirimler açık" : "Bildirimleri aç"}</strong>
+                <small>{push.enabled ? "Boşalınca / sıra sana gelince haber ver" : "Uygulama kapalıyken bile haber al"}</small>
+              </span>
+            </span>
+            <span className={`push-switch ${push.enabled ? "on" : ""}`} aria-hidden><span /></span>
+          </button>
+        ) : (
+          <div className="menu-note">Bu cihaz/tarayıcı push bildirimini desteklemiyor.</div>
+        )}
 
         <div className="menu-section-label">Kim</div>
         <button className="menu-row" onClick={() => { onClose(); onPickIdentity(); }}>
