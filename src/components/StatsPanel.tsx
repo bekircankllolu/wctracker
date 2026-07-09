@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { Stats } from "../lib/useVisits";
+import type { Stats, Visit } from "../lib/useVisits";
 import type { Member } from "../members";
 import Avatar from "./Avatar";
+import MemberDetail from "./MemberDetail";
 
 function fmtDuration(sec: number): string {
   const m = Math.floor(sec / 60);
@@ -10,10 +11,11 @@ function fmtDuration(sec: number): string {
   return `${m} dk ${s} sn`;
 }
 
-type Props = { stats: Stats; statsWeek: Stats; members: Member[] };
+type Props = { stats: Stats; statsWeek: Stats; members: Member[]; visits: Visit[] };
 
-export default function StatsPanel({ stats, statsWeek, members }: Props) {
+export default function StatsPanel({ stats, statsWeek, members, visits }: Props) {
   const [tab, setTab] = useState<"week" | "all">("week");
+  const [selected, setSelected] = useState<string | null>(null);
   const s = tab === "week" ? statsWeek : stats;
   const memberOf = (n: string) => members.find((m) => m.name === n);
   const top = s.perMember.slice(0, 3);
@@ -32,13 +34,13 @@ export default function StatsPanel({ stats, statsWeek, members }: Props) {
           {top.map((m, i) => {
             const mem = memberOf(m.name);
             return (
-              <div className="lb-item" key={m.name}>
+              <button className="lb-item tappable" key={m.name} onClick={() => setSelected(m.name)}>
                 <span className={`medal m${i + 1}`}>{i + 1}</span>
                 <span className="lb-rank">{i + 1}</span>
                 <span className="lb-name">{m.name}</span>
                 <span className={`lb-pill ${i === 0 ? "hot" : ""}`}>{m.count} kez</span>
                 <Avatar emoji={mem?.emoji ?? "🙂"} color={mem?.color ?? "#f2711c"} avatarUrl={mem?.avatar_url} size={40} />
-              </div>
+              </button>
             );
           })}
 
@@ -54,6 +56,15 @@ export default function StatsPanel({ stats, statsWeek, members }: Props) {
           ) : null}
         </div>
       )}
+
+      {selected ? (
+        <MemberDetail
+          name={selected}
+          member={memberOf(selected)}
+          visits={visits}
+          onClose={() => setSelected(null)}
+        />
+      ) : null}
     </>
   );
 }
