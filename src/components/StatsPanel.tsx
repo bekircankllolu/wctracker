@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Stats, Visit } from "../lib/useVisits";
 import type { Member } from "../members";
+import AppIcon from "./AppIcon";
 import Avatar from "./Avatar";
 import MemberDetail from "./MemberDetail";
 
@@ -35,7 +36,7 @@ export default function StatsPanel({ stats, statsWeek, members, visits }: Props)
             const mem = memberOf(m.name);
             return (
               <button className={`lb-item tappable ${i === 0 ? "first" : ""}`} key={m.name} onClick={() => setSelected(m.name)}>
-                <span className="lb-rank">{i + 1}</span>
+                <span className="lb-rank">{i === 0 ? <AppIcon name="trophy" /> : i + 1}</span>
                 <span className="lb-name">{m.name}</span>
                 <span className="lb-pill">{m.count} kez</span>
                 <span className="plain-avatar" style={{ width: 40, height: 40 }}>
@@ -51,7 +52,7 @@ export default function StatsPanel({ stats, statsWeek, members, visits }: Props)
 
           {s.longestStay ? (
             <div className="lb-item record">
-              <span className="rec-emoji" aria-hidden>⏳</span>
+              <span className="rec-emoji" aria-hidden><AppIcon name="medal" /></span>
               <span className="rec-text">
                 <span className="rec-label">Rekor — en uzun ziyaret</span>
                 <strong className="rec-name">{s.longestStay.name}</strong>

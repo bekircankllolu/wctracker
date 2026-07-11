@@ -1,5 +1,6 @@
 import type { ThemeChoice } from "../lib/useTheme";
 import type { Member } from "../members";
+import AppIcon from "./AppIcon";
 import Avatar from "./Avatar";
 
 type Props = {
@@ -68,7 +69,7 @@ export default function Menu({
             {me ? (
               <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={36} />
             ) : (
-              <span className="menu-row-emoji" aria-hidden>🙂</span>
+              <span className="menu-row-emoji" aria-hidden><AppIcon name="user" /></span>
             )}
             <span className="menu-row-text">
               <strong>{me ? me.name : "Ben kimim?"}</strong>
@@ -90,7 +91,7 @@ export default function Menu({
           <span className="menu-row-arrow" aria-hidden>›</span>
         </button>
 
-        <p className="menu-foot">WC Tracker 🚽 · aile tuvalet takip</p>
+        <p className="menu-foot">WC Tracker · aile tuvalet takip</p>
       </div>
     </div>
   );

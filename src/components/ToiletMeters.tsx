@@ -1,11 +1,12 @@
 import { useState } from "react";
 import type { Phase } from "../lib/useWcState";
+import AppIcon, { type AppIconName } from "./AppIcon";
 
 const PAPER = [
-  { label: "Bitmiş", value: 0, dots: 0 },
-  { label: "Az kalmış", value: 30, dots: 1 },
-  { label: "Biraz bitmiş", value: 70, dots: 3 },
-  { label: "Daha çok var", value: 100, dots: 4 },
+  { label: "Bitmiş", value: 0, dots: 0, icon: "paper-empty" },
+  { label: "Az kalmış", value: 30, dots: 1, icon: "paper-low" },
+  { label: "Biraz bitmiş", value: 70, dots: 3, icon: "paper-medium" },
+  { label: "Daha çok var", value: 100, dots: 4, icon: "paper-full" },
 ];
 function paperStage(level: number): number {
   if (level <= 10) return 0;
@@ -15,9 +16,9 @@ function paperStage(level: number): number {
 }
 
 const SMELL = [
-  { label: "Kokmuyor", emoji: "🌿", hint: "tertemiz 🌸" },
-  { label: "Az kokuyor", emoji: "😷", hint: "biraz havalandırmak iyi olur 🌬️" },
-  { label: "Leş gibi", emoji: "🤢", hint: "kapıyı kapalı tut 🙏" },
+  { label: "Kokmuyor", icon: "smell-fresh", hint: "tertemiz" },
+  { label: "Az kokuyor", icon: "smell-bad", hint: "biraz havalandırmak iyi olur" },
+  { label: "Leş gibi", icon: "smell-awful", hint: "kapıyı kapalı tut" },
 ];
 
 type Props = {
@@ -39,7 +40,7 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
   return (
     <div className="meters">
       <button className="tile tile--mint meter-tile" onClick={() => setPaperOpen(true)}>
-        <span className="tile-icon" aria-hidden>🧻</span>
+        <span className="tile-icon icon-paper" aria-hidden><AppIcon name={paper.icon as AppIconName} /></span>
         <span className="tile-label mint">Kağıt</span>
         <span className="tile-value">{paper.label}</span>
         <span className="dot-row">
@@ -54,7 +55,7 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
           <span className="tile-label lavender">Koku · sen ayarla</span>
         ) : (
           <>
-            <span className="tile-icon" aria-hidden>{smell.emoji}</span>
+            <span className="tile-icon icon-smell" aria-hidden><AppIcon name={smell.icon as AppIconName} /></span>
             <span className="tile-label lavender">Koku</span>
           </>
         )}
@@ -68,7 +69,7 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
                 onClick={() => onSmell(i)}
                 aria-label={sm.label}
               >
-                {sm.emoji}
+                <AppIcon name={sm.icon as AppIconName} />
               </button>
             ))}
           </div>
@@ -91,6 +92,7 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
                   className={`paper-pick-btn ${stage === i ? "on" : ""}`}
                   onClick={() => { onPaper(p.value); setPaperOpen(false); }}
                 >
+                  <span className="paper-pick-icon" aria-hidden><AppIcon name={p.icon as AppIconName} /></span>
                   <span className="dot-row">
                     {[0, 1, 2, 3].map((d) => <span key={d} className={`dot ${d < p.dots ? "on" : ""}`} />)}
                   </span>

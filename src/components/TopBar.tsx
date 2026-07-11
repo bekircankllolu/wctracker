@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import AppIcon from "./AppIcon";
 
 type Props = {
   title: string;
@@ -13,9 +14,7 @@ export default function TopBar({ title, onMenu, right }: Props) {
       <div className="tb-right">
         {onMenu ? (
           <button className="tb-icon-btn" onClick={onMenu} aria-label="Menü">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
-              <path d="M4 8h16M4 16h10" />
-            </svg>
+            <AppIcon name="menu" />
           </button>
         ) : null}
         {right}

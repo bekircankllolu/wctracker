@@ -1,4 +1,5 @@
 import Avatar from "./Avatar";
+import AppIcon from "./AppIcon";
 import { useElapsed, useCountdown } from "../lib/timers";
 import type { Phase } from "../lib/useWcState";
 
@@ -40,9 +41,9 @@ export default function StatusCard({
     return (
       <div className="hero hero--butter hero--center">
         <span className="hero-pill self">● HAVALANDIRILIYOR</span>
-        <span className="hero-emoji" aria-hidden>💨</span>
+        <span className="hero-emoji hero-icon hero-icon--smell" aria-hidden><AppIcon name="smell-awful" /></span>
         <span className="hero-clock">{mmss(cooldownMs)}</span>
-        <span className="hero-sub center">Leş gibi kokuyor, biraz bekleyelim 🤢</span>
+        <span className="hero-sub center">Leş gibi kokuyor, biraz bekleyelim</span>
         {multiplier > 1 ? <span className="hero-chip">koku çarpanı ×{multiplier}</span> : null}
       </div>
     );
@@ -52,9 +53,9 @@ export default function StatusCard({
     return (
       <div className="hero hero--mint hero--center">
         <span className="hero-pill self">● BOŞ</span>
-        <span className="hero-emoji big" aria-hidden>🚽</span>
+        <span className="hero-emoji hero-icon hero-icon--toilet big" aria-hidden><AppIcon name="toilet" /></span>
         <span className="hero-title">Müsait</span>
-        <span className="hero-sub center">Tuvalet boş, buyurun 🙌</span>
+        <span className="hero-sub center">Tuvalet boş, buyurun</span>
       </div>
     );
   }
