@@ -134,12 +134,20 @@ export default function App() {
     prevOcc.current = state.occupant;
   }, [status, state.occupant, identity]);
 
-  const handleEnter = () => {
+  // Giriş: durumu doldur + diğer cihazlara push gönder (uygulama kapalı olsa da).
+  const handleEnter = async () => {
     vibrate(15);
-    if (identity) {
-      enter(identity);
-      leaveQueue(identity); // girince kuyruktan düş
-    } else setIdentityOpen(true);
+    if (!identity) { setIdentityOpen(true); return; }
+    const ok = await enter(identity);
+    if (!ok) return;
+    leaveQueue(identity); // girince kuyruktan düş
+    push.sendPush({
+      title: `${identity} tuvalete girdi 🚽`,
+      body: "Tuvalet şu an dolu.",
+      tag: "wc-enter",
+      excludeEndpoint: push.endpoint ?? undefined,
+      excludeMember: identity,
+    });
   };
 
   // Çıkış: durumu boşalt + diğer cihazlara push gönder (uygulama kapalı olsa da).
