@@ -79,12 +79,20 @@ re-renders on a 1s interval.
 (`useQueue`) push a temp/optimistic entry immediately, then reconcile with
 the server response or the realtime echo (matched by sender+body for chat).
 
-**Cooldown / "havalandırma" mechanic:** if someone exits while
-`smell_level >= 2`, `wc_state.cooldown_until` is set (3 min ×
-`smell_multiplier`) and the phase becomes `"cooldown"` instead of `"free"`.
-Entering again during cooldown increments `smell_multiplier` — this is the
-"koku çarpanı" shown in the UI. Phase is always derived (`useWcState`
-computes `phase` from `occupant`/`cooldown_until`), never stored directly.
+**Cooldown / "havalandırma" mechanic:** `smell_level` is a 4-point scale
+(0 Çok iyi / 1 İyi / 2 Kötü / 3 Çok kötü, see `ToiletMeters.tsx`'s `SMELL`
+array). If someone exits while `smell_level >= 3`, `wc_state.cooldown_until`
+is set (3 min × `smell_multiplier`) and the phase becomes `"cooldown"`
+instead of `"free"`. Entering again during cooldown increments
+`smell_multiplier` — this is the "koku çarpanı" shown in the UI. Phase is
+always derived (`useWcState` computes `phase` from
+`occupant`/`cooldown_until`), never stored directly.
+
+**Icons:** in-app iconography is custom PNGs, not emoji — `AppIcon`
+(`src/components/AppIcon.tsx`) renders `<img src="/icons/{name}.png">` from a
+closed `AppIconName` union; the actual files live in `public/icons/`. Add a
+new icon by dropping the PNG in `public/icons/` and extending the
+`AppIconName` union, not by reaching for an emoji glyph.
 
 **Design system ("Bento Pastel"):** tokens are CSS custom properties in
 `src/index.css` (`:root` = light, `:root[data-theme="dark"]` = dark),
