@@ -92,6 +92,7 @@ export function useWcState() {
       .eq("id", ROW_ID).is("occupant", null).select(SELECT).maybeSingle();
     setBusy(false);
     if (!error && data) { tokenRef.current = token; writeToken(token); setState(data as WcState); }
+    return !error && Boolean(data);
   }, []);
 
   const exit = useCallback(async () => {
