@@ -50,7 +50,7 @@ export default function Calendar({ members, visits }: Props) {
 
   return (
     <>
-      <div className="card cal-panel">
+      <div className="tile cal-panel">
         <div className="cal-nav">
           <button className="cal-arrow" onClick={prev} aria-label="Önceki">‹</button>
           <span className="cal-month">{MONTHS[view.m]} {view.y}</span>
@@ -83,7 +83,15 @@ export default function Calendar({ members, visits }: Props) {
           <span className="champ-label">Bu haftanın şampiyonu</span>
           <strong className="champ-name">{champ ? `${champ.name} · ${champ.count} ziyaret` : "Henüz veri yok"}</strong>
         </div>
-        {champ ? <Avatar emoji={memberOf(champ.name)?.emoji ?? "🙂"} color={memberOf(champ.name)?.color ?? "#f2711c"} avatarUrl={memberOf(champ.name)?.avatar_url} size={46} /> : null}
+        {champ ? (
+          <span className="plain-avatar" style={{ width: 46, height: 46 }}>
+            {memberOf(champ.name)?.avatar_url ? (
+              <Avatar emoji={memberOf(champ.name)?.emoji ?? "🙂"} color={memberOf(champ.name)?.color ?? "#f2711c"} avatarUrl={memberOf(champ.name)?.avatar_url} size={46} />
+            ) : (
+              <span aria-hidden style={{ fontSize: 23 }}>{memberOf(champ.name)?.emoji ?? "🙂"}</span>
+            )}
+          </span>
+        ) : null}
       </div>
     </>
   );

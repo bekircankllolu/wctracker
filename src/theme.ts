@@ -1,36 +1,34 @@
-// Merkezi renk paleti — web (App.css'teki CSS değişkenleriyle aynı değerler)
+// Merkezi renk paleti — web (index.css'teki CSS değişkenleriyle aynı değerler)
 // ve ileride React Native tarafının ortak kullanabilmesi için tek kaynak.
 export const palette = {
-  bg: "#f1ece3",
+  bg: "#ffffff",
   card: "#ffffff",
-  card2: "#f5f0e7",
-  ink: "#211d19",
-  inkDim: "#8a8178",
-  line: "#eae3d8",
+  tile: "#f3f2ef",
+  ink: "#111111",
+  inkDim: "#a9a49c",
+  line: "#e4e2dd",
 
-  amber: "#f6b31b",
-  amberDeep: "#e09400",
-  coral: "#ec6a80",
-  coralDeep: "#d8536b",
-  teal: "#2f8f80",
-  tealDeep: "#26766a",
-  cream: "#fbf5e2",
+  peach: "#ffd3c4", // dolu / aktif
+  mint: "#cdedbb", // boş / kağıt
+  lavender: "#ddd3ff", // koku / sohbet
+  butter: "#ffe9a8", // lig / cooldown
+  danger: "#ffb4a2", // uyarı / hata
 
-  free: "#2f8f80", // müsait (teal)
-  occupied: "#ec6a80", // dolu (mercan)
+  free: "#4c6b3a", // müsait (mint-ink)
+  occupied: "#7a4632", // dolu (peach-ink)
 };
 
-// Leaderboard sıra renkleri (#1, #2, #3) — referans stiliyle.
-export const rankColors = ["#ec6a80", "#f3ead2", "#f6b31b"];
+// Leaderboard sıra renkleri (#1, #2, #3).
+export const rankColors = ["#ffe9a8", "#f3f2ef", "#f3f2ef"];
 
 // İstatistik / avatar rengi olmayan durumlar için seri.
 export const chartColors = [
-  "#ec6a80",
-  "#2f8f80",
-  "#f6b31b",
-  "#6e4a3a",
-  "#8a9a3b",
-  "#6b6a5c",
+  "#ffd3c4",
+  "#cdedbb",
+  "#ddd3ff",
+  "#ffe9a8",
+  "#a9a49c",
+  "#111111",
 ];
 
 export function colorForIndex(i: number): string {

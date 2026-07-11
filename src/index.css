@@ -1,41 +1,44 @@
-/* Inter fontu index.html'de <link> ile erken yükleniyor (daha hızlı metin). */
+/* Space Grotesk fontu index.html'de <link> ile erken yükleniyor (daha hızlı metin). */
 
 :root {
-  --bg: #f6f4ef;
+  /* Bento Pastel — açık tema */
+  --bg: #ffffff;
+  --tile: #f3f2ef;
   --card: #ffffff;
-  --ink: #1a1a1a;
-  --ink-2: #171717;
-  --ink-dim: #97938c;
-  --ink-mid: #6b675f;
-  --line: #ece9e2;
+  --ink: #111111;
+  --ink-mid: #6f6b63;
+  --ink-dim: #a9a49c;
+  --line: #e4e2dd;
+  --track: #e4e2dd;
 
-  /* Nötr yüzeyler — karanlık modda da okunur kalması için tema değişkeni */
-  --muted: #f2efe8;
-  --muted-2: #e9e5db;
+  --on-ink: #ffffff; /* siyah pill üstündeki metin/ikon rengi */
 
-  --orange: #f2711c;
-  --orange-deep: #e0620f;
-  --orange-soft: #fde6d6;
+  --peach: #ffd3c4; /* dolu / aktif */
+  --peach-ink: #7a4632;
+  --mint: #cdedbb; /* boş / kağıt */
+  --mint-ink: #4c6b3a;
+  --lavender: #ddd3ff; /* koku / sohbet */
+  --lavender-ink: #5b4d8a;
+  --butter: #ffe9a8; /* lig / cooldown */
+  --butter-ink: #7a5c14;
+  --danger: #ffb4a2; /* uyarı / hata */
+  --danger-ink: #7a2a1a;
 
-  --green: #3f9e56;
-  --green-soft: #e3f3e6;
-  --red: #d63b2e;
-  --red-soft: #fbe0dd;
-  --purple: #8b5cf6;
+  --nav-bg: #111111;
+  --nav-border: transparent;
+  --nav-dim: #8d8a85;
 
-  --gold: #f6c445;
-  --silver: #c7ccd6;
-  --bronze: #d79766;
-
-  --radius: 20px;
-  --radius-sm: 16px;
+  --radius-hero: 26px;
+  --radius-tile: 22px;
+  --radius-row: 18px;
+  --radius-sm: 14px;
   --radius-xs: 12px;
   --pill: 999px;
 
-  --shadow: 0 8px 26px rgba(30, 25, 18, 0.07);
-  --shadow-sm: 0 3px 12px rgba(30, 25, 18, 0.05);
+  --shadow: 0 14px 30px rgba(17, 17, 17, 0.16);
+  --shadow-sm: 0 1px 3px rgba(17, 17, 17, 0.06);
 
-  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   color-scheme: light;
   font-family: var(--font);
@@ -44,23 +47,27 @@
 }
 
 /* Karanlık mod: index.html'deki satır içi script ve useTheme kancası
-   <html data-theme="dark"> ekler. Yedek: script çalışmazsa sistem tercihi. */
+   <html data-theme="dark"> ekler. Yedek: script çalışmazsa sistem tercihi.
+   Pastel karolar koyu modda AYNEN kalır (üstlerindeki metin hep #111111). */
 :root[data-theme="dark"] {
-    --bg: #171613;
-    --card: #201f1b;
-    --ink: #f4f1ea;
-    --ink-2: #0d0c0b;
-    --ink-dim: #8f8a80;
-    --ink-mid: #b4afa4;
-    --line: #2c2a24;
-    --muted: #2b2925;
-    --muted-2: #34302a;
-    --orange-soft: rgba(242, 113, 28, 0.22);
-    --green-soft: rgba(63, 158, 86, 0.2);
-    --red-soft: rgba(214, 59, 46, 0.24);
-    --shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
-    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.34);
-    color-scheme: dark;
+  --bg: #161512;
+  --tile: #26241f;
+  --card: #26241f;
+  --ink: #f4f1ea;
+  --ink-mid: #c9c5ba;
+  --ink-dim: #8d8a80;
+  --line: #3a3831;
+  --track: #3a3831;
+
+  --on-ink: #111111; /* siyah pill koyu modda #f4f1ea zemine terslenir */
+
+  --nav-bg: #26241f;
+  --nav-border: #3a3831;
+  --nav-dim: #8d8a80;
+
+  --shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -75,6 +82,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { min-height: 100dvh; background: var(--bg); color: var(--ink); }
 #root { min-height: 100dvh; }
-button { font-family: inherit; cursor: pointer; border: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; color: inherit; background: none; }
 button:disabled { cursor: not-allowed; }
 input { font-family: inherit; }

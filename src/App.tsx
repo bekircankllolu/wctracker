@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import TopBar from "./components/TopBar";
 import StatusCard from "./components/StatusCard";
-import StatusBanner from "./components/StatusBanner";
 import Avatar from "./components/Avatar";
 import EnterPanel from "./components/EnterPanel";
 import NotePanel from "./components/NotePanel";
@@ -37,10 +36,10 @@ function vibrate(pattern: number | number[]) {
   }
 }
 
-const TAB_META: Record<Tab, { icon: string; title: string }> = {
-  durum: { icon: "✨", title: "Tuvalet Takip" },
-  sohbet: { icon: "💬", title: "Sohbet" },
-  takvim: { icon: "📅", title: "Takvim" },
+const TAB_TITLE: Record<Tab, string> = {
+  durum: "WC Tracker 🚽",
+  sohbet: "Sohbet 💬",
+  takvim: "Takvim 📅",
 };
 
 export default function App() {
@@ -61,12 +60,12 @@ export default function App() {
   const [rosterOpen, setRosterOpen] = useState(false);
   const [identityOpen, setIdentityOpen] = useState(false);
   const [poked, setPoked] = useState(false);
-  const [pokeToast, setPokeToast] = useState<string | null>(null);
+  const [pokeToast, setPokeToast] = useState<{ text: string; tone: "ink" | "mint" | "peach" | "butter" } | null>(null);
   const [celebrate, setCelebrate] = useState(false);
 
   const onPoke = useCallback((from: string) => {
     setPoked(true);
-    setPokeToast(`${from} dürttü! 👉`);
+    setPokeToast({ text: `${from} dürttü! 👉`, tone: "peach" });
     vibrate([30, 50, 30]);
   }, []);
   const sendPoke = usePoke(onPoke);
@@ -92,7 +91,7 @@ export default function App() {
       const mins = Math.floor(rec.value / 60);
       const secs = rec.value % 60;
       const pretty = mins > 0 ? `${mins} dk ${secs} sn` : `${secs} sn`;
-      setPokeToast(`🏆 Yeni rekor! ${rec.name} — ${pretty}`);
+      setPokeToast({ text: `🏆 Yeni rekor! ${rec.name} — ${pretty}`, tone: "butter" });
       setCelebrate(true);
       vibrate([30, 40, 30, 40, 60]);
     }
@@ -120,15 +119,15 @@ export default function App() {
     const prev = prevOcc.current;
     if (prev !== undefined && prev !== state.occupant) {
       if (state.occupant && state.occupant !== identity) {
-        setPokeToast(`${state.occupant} tuvalete girdi 🚽`);
+        setPokeToast({ text: `${state.occupant} tuvalete girdi 🚽`, tone: "ink" });
         vibrate(25);
       } else if (!state.occupant && prev) {
         // Tuvalet boşaldı: sıradaki kişi bensem özel bildirim.
         if (identity && queueHeadRef.current === identity) {
-          setPokeToast("Sıra sende! 🚽 Hadi bakalım");
+          setPokeToast({ text: "Sıra sende! 🚽 Hadi bakalım", tone: "mint" });
           vibrate([40, 60, 40]);
         } else {
-          setPokeToast("Tuvalet boşaldı ✅");
+          setPokeToast({ text: "Tuvalet boşaldı ✅", tone: "ink" });
         }
       }
     }
@@ -175,14 +174,15 @@ export default function App() {
     }
   };
 
+  const showBadge = tab === "durum" && phase === "occupied" && !amOccupant;
   const avatarBtn = (
-    <button
-      className="avatar-chip"
-      onClick={() => setIdentityOpen(true)}
-      style={me ? ({ ["--me-color" as string]: me.color }) : undefined}
-      aria-label="Ben kimim?"
-    >
-      {me ? <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={38} /> : <span className="avatar-emoji">🙂</span>}
+    <button className="avatar-chip" onClick={() => setIdentityOpen(true)} aria-label="Ben kimim?">
+      {me?.avatar_url ? (
+        <Avatar emoji={me.emoji} color={me.color} avatarUrl={me.avatar_url} size={42} shape="rounded" />
+      ) : (
+        <span className="avatar-emoji" aria-hidden>{me ? me.emoji : "🙂"}</span>
+      )}
+      {showBadge ? <span className="avatar-badge" /> : null}
     </button>
   );
   const rightSlot =
@@ -190,6 +190,7 @@ export default function App() {
 
   const meters = (
     <ToiletMeters
+      phase={phase}
       paperLevel={state.paper_level}
       smellLevel={state.smell_level}
       canSetSmell={amOccupant}
@@ -201,10 +202,9 @@ export default function App() {
   return (
     <div className="app">
       <TopBar
-        icon={TAB_META[tab].icon}
-        title={TAB_META[tab].title}
+        title={TAB_TITLE[tab]}
         right={rightSlot}
-        onMenu={() => setMenuOpen(true)}
+        onMenu={tab === "durum" ? () => setMenuOpen(true) : undefined}
       />
 
       {status === "error" ? (
@@ -215,7 +215,6 @@ export default function App() {
         <main className="app-main" key={tab}>
           {tab === "durum" ? (
             <>
-              {phase === "occupied" ? <StatusBanner occupant={state.occupant} enteredAt={state.entered_at} /> : null}
               {phase === "occupied" ? <LongStayBadge enteredAt={state.entered_at} /> : null}
 
               <StatusCard
@@ -227,6 +226,8 @@ export default function App() {
                 emoji={current?.emoji ?? "🚽"}
                 color={current?.color ?? "#f2711c"}
                 avatarUrl={current?.avatar_url ?? null}
+                amOccupant={amOccupant}
+                identity={identity}
                 poked={poked}
                 cooldownUntil={state.cooldown_until}
                 multiplier={state.smell_multiplier}
@@ -262,7 +263,7 @@ export default function App() {
                   </>
                 )
               ) : phase === "cooldown" ? (
-                <button className="poke-btn" disabled={busy} onClick={handleEnter}>😬 Yine de gir (koku çarpanı artar)</button>
+                <button className="poke-btn outline" disabled={busy} onClick={handleEnter}>😬 Yine de gir (koku çarpanı artar)</button>
               ) : (
                 <EnterPanel identity={identity} disabled={busy} onEnter={handleEnter} onPickIdentity={() => setIdentityOpen(true)} onManage={() => setRosterOpen(true)} />
               )}
@@ -286,7 +287,7 @@ export default function App() {
       <BottomNav active={tab} onChange={setTab} />
 
       {celebrate ? <Confetti /> : null}
-      {pokeToast ? <div className="poke-toast">{pokeToast}</div> : null}
+      {pokeToast ? <div className={`poke-toast ${pokeToast.tone}`}>{pokeToast.text}</div> : null}
 
       {menuOpen ? (
         <Menu

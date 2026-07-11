@@ -1,25 +1,25 @@
 import type { ReactNode } from "react";
 
 type Props = {
-  icon: string;
   title: string;
+  onMenu?: () => void;
   right?: ReactNode;
-  onMenu: () => void;
 };
 
-export default function TopBar({ icon, title, right, onMenu }: Props) {
+export default function TopBar({ title, onMenu, right }: Props) {
   return (
     <header className="topbar">
-      <button className="tb-menu" onClick={onMenu} aria-label="Menü">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M4 7h16M4 12h16M4 17h16" />
-        </svg>
-      </button>
-      <div className="tb-title">
-        <span className="tb-icon" aria-hidden>{icon}</span>
-        <span>{title}</span>
+      <span className="tb-title">{title}</span>
+      <div className="tb-right">
+        {onMenu ? (
+          <button className="tb-icon-btn" onClick={onMenu} aria-label="Menü">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
+              <path d="M4 8h16M4 16h10" />
+            </svg>
+          </button>
+        ) : null}
+        {right}
       </div>
-      <div className="tb-right">{right}</div>
     </header>
   );
 }

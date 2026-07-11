@@ -15,9 +15,9 @@ export default function EnterPanel({
 }: Props) {
   if (!identity) {
     return (
-      <div className="enter-panel">
+      <div className="tile enter-panel">
         <p className="enter-hello">Bu telefonda kim var? 📱</p>
-        <button className="enter-btn pick" onClick={onPickIdentity}>
+        <button className="enter-btn" onClick={onPickIdentity}>
           Kim olduğunu seç
         </button>
         <div className="enter-links">
@@ -30,7 +30,7 @@ export default function EnterPanel({
   }
 
   return (
-    <div className="enter-panel">
+    <div className="tile enter-panel">
       <p className="enter-hello">
         Merhaba <strong>{identity}</strong> 👋
       </p>

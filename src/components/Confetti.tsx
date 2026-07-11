@@ -1,6 +1,6 @@
 // Basit, bağımlılıksız konfeti — rekor kırılınca kısa bir kutlama.
 const PIECES = Array.from({ length: 28 });
-const COLORS = ["#f2711c", "#3f9e56", "#8b5cf6", "#ec4899", "#f6c445", "#3b82f6"];
+const COLORS = ["#ffd3c4", "#cdedbb", "#ddd3ff", "#ffe9a8", "#ffb4a2", "#111111"];
 
 export default function Confetti() {
   return (

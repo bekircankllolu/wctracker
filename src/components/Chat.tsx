@@ -8,7 +8,12 @@ type Props = {
   onPickIdentity: () => void;
 };
 
-const SENDER_COLORS = ["#3f9e56", "#f2711c", "#8b5cf6", "#3b82f6", "#ec4899", "#0ea5e9"];
+const SENDER_COLORS = ["#c2410c", "#3f9e56", "#8b5cf6", "#3b82f6", "#0ea5e9"];
+function senderTone(name: string): "tile" | "lavender" {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return h % 2 === 0 ? "tile" : "lavender";
+}
 function senderColor(name: string) {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
@@ -35,27 +40,34 @@ export default function Chat({ messages, identity, onSend, onPickIdentity }: Pro
   }
 
   return (
-    <div className="card chat-card">
-      <div className="chat-head">Sohbet <span aria-hidden>💬</span></div>
-
+    <div className="chat-screen">
       <div className="chat-list" ref={listRef}>
         {messages.length === 0 ? (
           <div className="chat-empty">İlk mesajı sen yaz ✍️</div>
         ) : (
-          messages.map((m) => (
-            <div
-              className={`msg-row ${m.sender === identity ? "mine" : ""} ${m.pending ? "pending" : ""} ${m.failed ? "failed" : ""}`}
-              key={m.id}
-            >
-              <div className="bubble">
-                <span className="msg-sender" style={{ color: senderColor(m.sender) }}>{m.sender}</span>
-                <span className="msg-body">{m.body}</span>
+          messages.map((m) => {
+            const mine = m.sender === identity;
+            const tone = mine ? "peach" : senderTone(m.sender);
+            return (
+              <div
+                className={`msg-row ${mine ? "mine" : ""} ${m.pending ? "pending" : ""} ${m.failed ? "failed" : ""}`}
+                key={m.id}
+              >
+                <div className={`bubble ${tone}`}>
+                  <span
+                    className="msg-sender"
+                    style={tone === "tile" ? { color: senderColor(m.sender) } : undefined}
+                  >
+                    {m.sender}
+                  </span>
+                  <span className="msg-body">{m.body}</span>
+                </div>
+                <span className="msg-time">
+                  {m.failed ? "gönderilemedi ⚠️" : m.pending ? "gönderiliyor…" : hhmm(m.created_at)}
+                </span>
               </div>
-              <span className="msg-time">
-                {m.failed ? "gönderilemedi ⚠️" : m.pending ? "gönderiliyor…" : hhmm(m.created_at)}
-              </span>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
