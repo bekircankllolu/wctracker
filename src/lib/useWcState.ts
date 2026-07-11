@@ -8,7 +8,7 @@ export type WcState = {
   photo_url: string | null;
   occupant_token: string | null;
   paper_level: number;
-  smell_level: number; // 0 kokmuyor, 1 az, 2 leş
+  smell_level: number; // 0 çok iyi, 1 iyi, 2 kötü, 3 çok kötü
   cooldown_until: string | null;
   smell_multiplier: number;
 };
@@ -101,10 +101,10 @@ export function useWcState() {
       .select("occupant, entered_at, note, smell_level, smell_multiplier").eq("id", ROW_ID).single();
     const { data: cleared } = await supabase.from("wc_state")
       .update({ occupant: null, entered_at: null, note: null, photo_url: null, occupant_token: null,
-        cooldown_until: (cur?.smell_level ?? 0) >= 2
+        cooldown_until: (cur?.smell_level ?? 0) >= 3
           ? new Date(Date.now() + COOLDOWN_BASE_MS * (cur?.smell_multiplier ?? 1)).toISOString()
           : null,
-        smell_multiplier: (cur?.smell_level ?? 0) >= 2 ? (cur?.smell_multiplier ?? 1) : 1 })
+        smell_multiplier: (cur?.smell_level ?? 0) >= 3 ? (cur?.smell_multiplier ?? 1) : 1 })
       .eq("id", ROW_ID).eq("occupant_token", tokenRef.current ?? "").select(SELECT).maybeSingle();
     if (cleared) {
       if (cur?.occupant && cur.entered_at) {

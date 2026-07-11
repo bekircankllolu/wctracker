@@ -1,6 +1,6 @@
 // WC Tracker Service Worker — çevrimdışı kabuk + hızlı tekrar açılış.
 // Sürüm değişince eski önbellek temizlenir.
-const CACHE = "wc-tracker-v1";
+const CACHE = "wc-tracker-v2";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {

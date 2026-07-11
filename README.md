@@ -22,7 +22,10 @@ npm run dev
 | Değişken | Açıklama |
 |---|---|
 | `VITE_SUPABASE_URL` | Supabase proje URL'i (Project Settings → API) |
-| `VITE_SUPABASE_ANON_KEY` | Publishable / anon anahtar |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable anahtarı |
+
+Eski kurulumlardaki `VITE_SUPABASE_ANON_KEY` değişkeni de geriye dönük olarak
+desteklenir.
 
 ## Veritabanı
 

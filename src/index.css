@@ -85,3 +85,30 @@ body { min-height: 100dvh; background: var(--bg); color: var(--ink); }
 button { font-family: inherit; cursor: pointer; border: none; color: inherit; background: none; }
 button:disabled { cursor: not-allowed; }
 input { font-family: inherit; }
+
+.config-error {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.config-error-card {
+  width: min(100%, 390px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  border-radius: var(--radius-tile);
+  background: var(--danger);
+  color: var(--danger-ink);
+}
+.config-error-card strong { font-size: 20px; }
+.config-error-card p { font-size: 14px; font-weight: 600; }
+.config-error-card code {
+  overflow-wrap: anywhere;
+  padding: 9px 11px;
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  font-weight: 700;
+}

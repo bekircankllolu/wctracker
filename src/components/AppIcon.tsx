@@ -31,7 +31,7 @@ export default function AppIcon({ name, alt = "", className = "" }: Props) {
       src={`/icons/${name}.png`}
       alt={alt}
       aria-hidden={alt ? undefined : true}
-      loading="lazy"
+      decoding="async"
       draggable={false}
     />
   );

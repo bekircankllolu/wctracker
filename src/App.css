@@ -35,7 +35,7 @@
   position: relative; width: 42px; height: 42px; border-radius: 14px;
   background: var(--tile); display: grid; place-items: center; color: var(--ink); flex-shrink: 0;
 }
-.tb-icon-btn .app-icon { width: 24px; height: 24px; }
+.tb-icon-btn .app-icon { width: 28px; height: 28px; }
 .tb-icon-btn:active, .avatar-chip:active { transform: scale(0.94); }
 .avatar-emoji { font-size: 20px; line-height: 1; }
 .avatar-badge {
@@ -76,9 +76,9 @@
 .hero-photo { width: 100%; max-width: 240px; border-radius: var(--radius-sm); object-fit: cover; max-height: 200px; align-self: flex-start; }
 .hero-emoji { font-size: 52px; line-height: 1; margin-top: 6px; }
 .hero-emoji.big { font-size: 58px; }
-.hero-icon { width: 86px; height: 86px; display: grid; place-items: center; }
+.hero-icon { width: 104px; height: 104px; display: grid; place-items: center; }
 .hero-icon .app-icon { width: 100%; height: 100%; }
-.hero-icon--toilet { width: 104px; height: 104px; animation: icon-float 3.8s ease-in-out infinite; }
+.hero-icon--toilet { width: 122px; height: 122px; animation: icon-float 3.8s ease-in-out infinite; }
 .hero-icon--smell { animation: smell-wobble 1.9s ease-in-out infinite; }
 .hero-title { font-size: 44px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
 .hero-clock { font-size: 56px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
@@ -110,7 +110,7 @@
 .meter-tile { display: flex; flex-direction: column; gap: 6px; text-align: left; color: #111111; }
 .tile--mint { background: var(--mint); }
 .tile--lavender { background: var(--lavender); }
-.tile-icon { width: 42px; height: 42px; line-height: 1; display: grid; place-items: center; }
+.tile-icon { width: 56px; height: 56px; line-height: 1; display: grid; place-items: center; }
 .tile-icon .app-icon { width: 100%; height: 100%; }
 .icon-paper .app-icon { animation: paper-roll 2.6s ease-in-out infinite; transform-origin: center; }
 .icon-smell .app-icon { animation: smell-wobble 2.1s ease-in-out infinite; transform-origin: center; }
@@ -123,16 +123,16 @@
 .dot.on { background: #111111; }
 .tile-hint { font-size: 11.5px; font-weight: 500; margin-top: 6px; }
 .tile-hint.lavender { color: var(--lavender-ink); }
-.smell-seg { display: flex; gap: 5px; margin-top: 8px; }
-.smell-seg-btn { flex: 1; display: grid; place-items: center; background: rgba(255,255,255,0.7); border-radius: 12px; padding: 7px 0; font-size: 16px; border: 2px solid transparent; transition: transform 0.1s ease; }
-.smell-seg-btn .app-icon { width: 28px; height: 28px; animation: icon-float 2.8s ease-in-out infinite; }
+.smell-seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
+.smell-seg-btn { min-width: 0; display: grid; place-items: center; background: rgba(255,255,255,0.7); border-radius: 12px; padding: 7px 0; border: 2px solid transparent; transition: transform 0.1s ease; }
+.smell-seg-btn .app-icon { width: 34px; height: 34px; animation: icon-float 2.8s ease-in-out infinite; }
 .smell-seg-btn:active { transform: scale(0.94); }
 .smell-seg-btn.on { background: #ffffff; border-color: #111111; }
 
 /* Kağıt seçici (dokununca açılan sheet) */
 .paper-pick { display: flex; flex-direction: column; gap: 8px; }
 .paper-pick-btn { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: var(--radius-row); padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--ink-mid); border: 2px solid transparent; }
-.paper-pick-icon { width: 42px; height: 42px; display: grid; place-items: center; flex-shrink: 0; }
+.paper-pick-icon { width: 54px; height: 54px; display: grid; place-items: center; flex-shrink: 0; }
 .paper-pick-icon .app-icon { width: 100%; height: 100%; }
 .paper-pick-btn .dot-row { margin-top: 0; width: 70px; }
 .paper-pick-btn .dot { background: var(--track); }
@@ -242,7 +242,7 @@
   background: var(--card); color: var(--ink-mid);
   display: grid; place-items: center; font-size: 13px; font-weight: 700;
 }
-.lb-rank .app-icon { width: 26px; height: 26px; }
+.lb-rank .app-icon { width: 30px; height: 30px; }
 .lb-item.first .lb-rank { background: #111111; color: var(--butter); }
 .lb-name { flex: 1; font-weight: 700; font-size: 16px; }
 .lb-pill { background: var(--card); color: var(--ink-mid); font-size: 11.5px; font-weight: 700; padding: 5px 11px; border-radius: var(--pill); white-space: nowrap; }
@@ -310,8 +310,8 @@
   transition: background 0.4s cubic-bezier(0.34, 1.4, 0.5, 1),
               color 0.25s ease, padding 0.4s cubic-bezier(0.34, 1.4, 0.5, 1);
 }
-.nav-icon { display: grid; place-items: center; width: 22px; height: 22px; }
-.nav-icon .app-icon { width: 24px; height: 24px; }
+.nav-icon { display: grid; place-items: center; width: 28px; height: 28px; }
+.nav-icon .app-icon { width: 28px; height: 28px; }
 .nav-label {
   max-width: 0; opacity: 0; margin-left: 0;
   font-size: 13px; font-weight: 700;
@@ -361,7 +361,7 @@
 .menu-row:disabled { opacity: 0.6; }
 .menu-row-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .menu-row-emoji { width: 38px; height: 38px; border-radius: 12px; background: var(--card); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
-.menu-row-emoji .app-icon { width: 30px; height: 30px; }
+.menu-row-emoji .app-icon { width: 34px; height: 34px; }
 
 @keyframes paper-roll {
   0%, 100% { transform: rotate(-2deg) translateY(0); }
