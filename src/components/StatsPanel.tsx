@@ -38,7 +38,13 @@ export default function StatsPanel({ stats, statsWeek, members, visits }: Props)
                 <span className="lb-rank">{i + 1}</span>
                 <span className="lb-name">{m.name}</span>
                 <span className="lb-pill">{m.count} kez</span>
-                <Avatar emoji={mem?.emoji ?? "🙂"} color={mem?.color ?? "#f2711c"} avatarUrl={mem?.avatar_url} size={40} />
+                <span className="plain-avatar" style={{ width: 40, height: 40 }}>
+                  {mem?.avatar_url ? (
+                    <Avatar emoji={mem?.emoji ?? "🙂"} color={mem?.color ?? "#f2711c"} avatarUrl={mem?.avatar_url} size={40} />
+                  ) : (
+                    <span aria-hidden style={{ fontSize: 20 }}>{mem?.emoji ?? "🙂"}</span>
+                  )}
+                </span>
               </button>
             );
           })}

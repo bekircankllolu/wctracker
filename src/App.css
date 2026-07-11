@@ -46,6 +46,8 @@
 /* ---------- Avatar ---------- */
 .avatar-img { object-fit: cover; display: block; flex-shrink: 0; }
 .avatar-fallback { display: grid; place-items: center; line-height: 1; flex-shrink: 0; }
+/* Fotoğrafsız durumda düz beyaz daire + emoji (topbar/hero/kuyruk/lig/kimlik ile aynı dil) */
+.plain-avatar { border-radius: 50%; background: #ffffff; display: grid; place-items: center; flex-shrink: 0; }
 
 /* ---------- Hero durum kartı ---------- */
 .hero { border-radius: var(--radius-hero); display: flex; flex-direction: column; gap: 12px; color: #111111; }
@@ -60,6 +62,7 @@
 .hero-pill { background: #111111; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 7px 14px; border-radius: var(--pill); white-space: nowrap; }
 .hero-pill.self { align-self: flex-start; }
 .hero-avatar { width: 52px; height: 52px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; }
+.hero-avatar-emoji { font-size: 26px; line-height: 1; }
 .hero-time-block { display: flex; flex-direction: column; }
 .hero-time { font-size: 64px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
 .hero-sub { font-size: 14px; font-weight: 500; color: #7a4632; margin-top: 6px; }
@@ -202,7 +205,7 @@
 .cal-cell.out .cal-num { color: var(--ink-dim); opacity: 0.5; }
 .cal-cell.today { background: var(--ink); }
 .cal-cell.today .cal-num { color: var(--on-ink); font-weight: 700; }
-.cal-todaycount { font-size: 9.5px; font-weight: 700; color: var(--peach); }
+.cal-todaycount { font-size: 9.5px; font-weight: 700; color: var(--on-ink); }
 .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
 
 /* ---------- Şampiyon kartı ---------- */

@@ -63,7 +63,13 @@ export default function StatusCard({
     <div className={`hero hero--peach ${poked ? "poked" : ""}`}>
       <div className="hero-top">
         <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
-        <span className="hero-avatar"><Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={52} /></span>
+        <span className="hero-avatar">
+          {avatarUrl ? (
+            <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={52} />
+          ) : (
+            <span className="hero-avatar-emoji" aria-hidden>{emoji}</span>
+          )}
+        </span>
       </div>
       <div className="hero-time-block">
         <span className="hero-time">{clock(elapsed)}</span>

@@ -28,7 +28,13 @@ export default function IdentityPicker({ members, identity, onPick, onClose }: P
                 onClose();
               }}
             >
-              <Avatar emoji={m.emoji} color={m.color} avatarUrl={m.avatar_url} size={50} />
+              <span className="plain-avatar" style={{ width: 52, height: 52 }}>
+                {m.avatar_url ? (
+                  <Avatar emoji={m.emoji} color={m.color} avatarUrl={m.avatar_url} size={52} />
+                ) : (
+                  <span aria-hidden style={{ fontSize: 26 }}>{m.emoji}</span>
+                )}
+              </span>
               <span>{m.name}</span>
             </button>
           ))}
