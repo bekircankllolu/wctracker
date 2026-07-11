@@ -51,17 +51,19 @@ export default function StatusCard({
 
   if (phase === "free") {
     return (
-      <div className="hero hero--mint hero--center">
+      <div className="hero hero--mint hero--bg-free hero--center">
         <span className="hero-pill self">● BOŞ</span>
-        <span className="hero-emoji hero-icon hero-icon--toilet big" aria-hidden><AppIcon name="toilet" /></span>
-        <span className="hero-title">Müsait</span>
-        <span className="hero-sub center">Tuvalet boş, buyurun</span>
+        <div className="hero-center-block">
+          <span className="hero-emoji hero-icon hero-icon--toilet big" aria-hidden><AppIcon name="toilet" /></span>
+          <span className="hero-title">Müsait</span>
+          <span className="hero-sub center">Tuvalet boş, buyurun</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={`hero hero--peach ${poked ? "poked" : ""}`}>
+    <div className={`hero hero--peach hero--bg-occupied ${poked ? "poked" : ""}`}>
       <div className="hero-top">
         <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
         <span className="hero-avatar">

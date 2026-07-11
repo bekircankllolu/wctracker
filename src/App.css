@@ -51,11 +51,15 @@
 .plain-avatar { border-radius: 50%; background: #ffffff; display: grid; place-items: center; flex-shrink: 0; }
 
 /* ---------- Hero durum kartı ---------- */
-.hero { border-radius: var(--radius-hero); display: flex; flex-direction: column; gap: 12px; color: #111111; }
-.hero--peach { background: var(--peach); padding: 22px 20px 20px; }
+/* Dolu ve Müsait kartları hep aynı yükseklikte kalır ki geçişte boyut zıplamasın. */
+.hero { border-radius: var(--radius-hero); display: flex; flex-direction: column; gap: 12px; color: #111111; min-height: 300px; background-size: cover; background-position: center; }
+.hero--peach { background-color: var(--peach); padding: 22px 20px 20px; }
 .hero--mint, .hero--butter { padding: 26px 20px; align-items: center; text-align: center; }
-.hero--mint { background: var(--mint); }
-.hero--butter { background: var(--butter); }
+.hero--mint { background-color: var(--mint); }
+.hero--butter { background-color: var(--butter); }
+.hero--bg-free { background-image: url("/hero-bg-free.jpg"); }
+.hero--bg-occupied { background-image: url("/hero-bg-occupied.jpg"); }
+.hero-center-block { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
 .hero.poked { animation: shake 0.5s ease; }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)} }
 
