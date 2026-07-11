@@ -70,7 +70,7 @@ export default function MemberDetail({ name, member, visits, onClose }: Props) {
           <>
             <div className="md-stats">
               <div className="md-stat"><span className="md-val">{fmt(avg)}</span><span className="md-label">Ortalama</span></div>
-              <div className="md-stat"><span className="md-val">{fmt(longest)}</span><span className="md-label">En uzun</span></div>
+              <div className="md-stat highlight"><span className="md-val">{fmt(longest)}</span><span className="md-label">En uzun</span></div>
               <div className="md-stat"><span className="md-val">{fmt(shortest)}</span><span className="md-label">En kısa</span></div>
             </div>
 

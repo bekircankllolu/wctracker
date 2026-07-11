@@ -28,17 +28,16 @@ export default function StatsPanel({ stats, statsWeek, members, visits }: Props)
       </div>
 
       {s.totalVisits === 0 ? (
-        <div className="card empty-card">Bu dönemde veri yok — ilk giren efsane olur 😄</div>
+        <div className="tile empty-card">Bu dönemde veri yok — ilk giren efsane olur 😄</div>
       ) : (
         <div className="lb-list">
           {top.map((m, i) => {
             const mem = memberOf(m.name);
             return (
-              <button className="lb-item tappable" key={m.name} onClick={() => setSelected(m.name)}>
-                <span className={`medal m${i + 1}`}>{i + 1}</span>
+              <button className={`lb-item tappable ${i === 0 ? "first" : ""}`} key={m.name} onClick={() => setSelected(m.name)}>
                 <span className="lb-rank">{i + 1}</span>
                 <span className="lb-name">{m.name}</span>
-                <span className={`lb-pill ${i === 0 ? "hot" : ""}`}>{m.count} kez</span>
+                <span className="lb-pill">{m.count} kez</span>
                 <Avatar emoji={mem?.emoji ?? "🙂"} color={mem?.color ?? "#f2711c"} avatarUrl={mem?.avatar_url} size={40} />
               </button>
             );

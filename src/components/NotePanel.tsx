@@ -19,12 +19,16 @@ export default function NotePanel({ note, onSave }: Props) {
   const dirty = text.trim() !== (note ?? "").trim();
 
   return (
-    <div className="note-panel">
+    <div className="tile note-panel">
       <div className="note-title">Not bırak ✏️</div>
 
       <div className="note-presets">
         {PRESETS.map((p) => (
-          <button key={p} className="note-chip" onClick={() => onSave(p)}>
+          <button
+            key={p}
+            className={`note-chip ${note === p ? "on" : ""}`}
+            onClick={() => onSave(p)}
+          >
             {p}
           </button>
         ))}

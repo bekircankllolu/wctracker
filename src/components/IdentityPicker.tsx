@@ -23,7 +23,6 @@ export default function IdentityPicker({ members, identity, onPick, onClose }: P
             <button
               key={m.id}
               className={`identity-opt ${identity === m.name ? "sel" : ""}`}
-              style={{ ["--member-color" as string]: m.color }}
               onClick={() => {
                 onPick(m.name);
                 onClose();

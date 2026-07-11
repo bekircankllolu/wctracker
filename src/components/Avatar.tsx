@@ -34,7 +34,7 @@ export default function Avatar({
       className="avatar-fallback"
       style={{
         ...style,
-        background: `color-mix(in srgb, ${color} 18%, var(--card-2))`,
+        background: `color-mix(in srgb, ${color} 18%, var(--card))`,
         fontSize: size * 0.5,
       }}
     >

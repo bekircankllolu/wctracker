@@ -50,7 +50,7 @@ export default function Calendar({ members, visits }: Props) {
 
   return (
     <>
-      <div className="card cal-panel">
+      <div className="tile cal-panel">
         <div className="cal-nav">
           <button className="cal-arrow" onClick={prev} aria-label="Önceki">‹</button>
           <span className="cal-month">{MONTHS[view.m]} {view.y}</span>
