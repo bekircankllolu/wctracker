@@ -204,7 +204,7 @@ export default function App() {
       <TopBar
         title={TAB_TITLE[tab]}
         right={rightSlot}
-        onMenu={tab === "durum" ? () => setMenuOpen(true) : undefined}
+        onMenu={() => setMenuOpen(true)}
       />
 
       {status === "error" ? (
