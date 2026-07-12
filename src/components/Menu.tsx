@@ -16,9 +16,9 @@ type Props = {
 };
 
 const THEMES: { key: ThemeChoice; label: string }[] = [
-  { key: "light", label: "Açık" },
-  { key: "dark", label: "Koyu" },
-  { key: "system", label: "Sistem" },
+  { key: "light", label: "AÇIK" },
+  { key: "dark", label: "KOYU" },
+  { key: "system", label: "SİSTEM" },
 ];
 
 export default function Menu({
