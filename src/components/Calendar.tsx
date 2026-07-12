@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Avatar from "./Avatar";
 import type { Member } from "../members";
 import type { Visit } from "../lib/useVisits";
@@ -6,6 +6,7 @@ import { MAX_REASONABLE_STAY } from "../lib/format";
 
 const DAYS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const LONG_DAYS = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
 const key = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 type Props = { members: Member[]; visits: Visit[] };
@@ -13,20 +14,26 @@ type Props = { members: Member[]; visits: Visit[] };
 export default function Calendar({ members, visits: allVisits }: Props) {
   const today = new Date();
   const [view, setView] = useState({ y: today.getFullYear(), m: today.getMonth() });
-  const memberOf = (n: string) => members.find((m) => m.name === n);
+  const [expanded, setExpanded] = useState(false);
+  const memberMap = useMemo(() => new Map(members.map((member) => [member.name, member])), [members]);
 
   // Anormal (sayaç unutulmuş) oturumları takvim/şampiyon sayımına katma —
   // liderlik tablosuyla tutarlı kalsın.
-  const visits = allVisits.filter((v) => v.duration_seconds <= MAX_REASONABLE_STAY);
+  const visits = useMemo(
+    () => allVisits.filter((v) => v.duration_seconds <= MAX_REASONABLE_STAY),
+    [allVisits],
+  );
 
-  const byDay = new Map<string, Map<string, number>>();
-  for (const v of visits) {
-    const d = new Date(v.created_at);
-    const k = key(d);
-    const mm = byDay.get(k) ?? new Map();
-    mm.set(v.member_name, (mm.get(v.member_name) ?? 0) + 1);
-    byDay.set(k, mm);
-  }
+  const byDay = useMemo(() => {
+    const result = new Map<string, Map<string, number>>();
+    for (const visit of visits) {
+      const visitKey = key(new Date(visit.created_at));
+      const counts = result.get(visitKey) ?? new Map<string, number>();
+      counts.set(visit.member_name, (counts.get(visit.member_name) ?? 0) + 1);
+      result.set(visitKey, counts);
+    }
+    return result;
+  }, [visits]);
   const dayInfo = (d: Date) => {
     const mm = byDay.get(key(d));
     if (!mm) return null;
@@ -35,20 +42,31 @@ export default function Calendar({ members, visits: allVisits }: Props) {
     return { name, total };
   };
 
-  // Bu haftanın şampiyonu (Pzt-Paz)
-  const dow = (today.getDay() + 6) % 7;
-  const monday = new Date(today); monday.setHours(0, 0, 0, 0); monday.setDate(today.getDate() - dow);
-  const wk = new Map<string, number>();
-  for (const v of visits) if (new Date(v.created_at).getTime() >= monday.getTime()) wk.set(v.member_name, (wk.get(v.member_name) ?? 0) + 1);
-  let champ: { name: string; count: number } | null = null;
-  for (const [n, c] of wk) if (!champ || c > champ.count) champ = { name: n, count: c };
+  const todayKey = key(today);
+  const champ = useMemo(() => {
+    const dailyCounts = new Map<string, number>();
+    for (const visit of visits) {
+      if (key(new Date(visit.created_at)) === todayKey) {
+        dailyCounts.set(visit.member_name, (dailyCounts.get(visit.member_name) ?? 0) + 1);
+      }
+    }
+    let leader: { name: string; count: number } | null = null;
+    for (const [name, count] of dailyCounts) {
+      if (!leader || count > leader.count) leader = { name, count };
+    }
+    return leader;
+  }, [visits, todayKey]);
 
-  const first = new Date(view.y, view.m, 1);
-  const start = new Date(first);
-  start.setDate(1 - ((first.getDay() + 6) % 7));
-  const cells = Array.from({ length: 42 }, (_, i) => {
-    const d = new Date(start); d.setDate(start.getDate() + i); return d;
-  });
+  const cells = useMemo(() => {
+    const first = new Date(view.y, view.m, 1);
+    const start = new Date(first);
+    start.setDate(1 - ((first.getDay() + 6) % 7));
+    return Array.from({ length: 42 }, (_, i) => {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+      return date;
+    });
+  }, [view]);
 
   const [dir, setDir] = useState<"prev" | "next">("next");
   const prev = () => { setDir("prev"); setView((v) => (v.m === 0 ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 })); };
@@ -56,7 +74,12 @@ export default function Calendar({ members, visits: allVisits }: Props) {
 
   return (
     <>
-      <div className="tile cal-panel">
+      <button className="cal-summary" onClick={() => setExpanded((value) => !value)} aria-expanded={expanded}>
+        <span>{today.getDate()} {MONTHS[today.getMonth()]} {today.getFullYear()} {LONG_DAYS[today.getDay()]}</span>
+        <span className={`cal-summary-arrow ${expanded ? "open" : ""}`} aria-hidden>⌄</span>
+      </button>
+
+      {expanded ? <div className="tile cal-panel">
         <div className="cal-nav">
           <button className="cal-arrow" onClick={prev} aria-label="Önceki">‹</button>
           <span className="cal-month">{MONTHS[view.m]} {view.y}</span>
@@ -68,7 +91,7 @@ export default function Calendar({ members, visits: allVisits }: Props) {
             const inMonth = d.getMonth() === view.m;
             const isToday = key(d) === key(today);
             const info = inMonth ? dayInfo(d) : null;
-            const col = info ? memberOf(info.name)?.color ?? "#f2711c" : undefined;
+            const col = info ? memberMap.get(info.name)?.color ?? "#f2711c" : undefined;
             return (
               <span key={i} className={`cal-cell ${!inMonth ? "out" : ""} ${isToday ? "today" : ""}`}>
                 <span className="cal-num">{d.getDate()}</span>
@@ -78,20 +101,19 @@ export default function Calendar({ members, visits: allVisits }: Props) {
           })}
         </div>
         <p className="cal-legend"><span className="cal-legend-dot" /> Nokta = o gün en çok giren kişinin rengi</p>
-      </div>
+      </div> : null}
 
       <div className="champ-card">
-        <span className="champ-emoji" aria-hidden>👑</span>
         <div className="champ-text">
-          <span className="champ-label">Bu haftanın şampiyonu</span>
+          <span className="champ-label">Bugünün lideri</span>
           <strong className="champ-name">{champ ? `${champ.name} · ${champ.count} ziyaret` : "Henüz veri yok"}</strong>
         </div>
         {champ ? (
           <span className="plain-avatar" style={{ width: 46, height: 46 }}>
-            {memberOf(champ.name)?.avatar_url ? (
-              <Avatar emoji={memberOf(champ.name)?.emoji ?? "🙂"} color={memberOf(champ.name)?.color ?? "#f2711c"} avatarUrl={memberOf(champ.name)?.avatar_url} size={46} />
+            {memberMap.get(champ.name)?.avatar_url ? (
+              <Avatar emoji={memberMap.get(champ.name)?.emoji ?? "🙂"} color={memberMap.get(champ.name)?.color ?? "#f2711c"} avatarUrl={memberMap.get(champ.name)?.avatar_url} size={46} />
             ) : (
-              <span aria-hidden style={{ fontSize: 23 }}>{memberOf(champ.name)?.emoji ?? "🙂"}</span>
+              <span aria-hidden style={{ fontSize: 23 }}>{memberMap.get(champ.name)?.emoji ?? "🙂"}</span>
             )}
           </span>
         ) : null}

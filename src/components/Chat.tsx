@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CHAT_MAX, type Message } from "../lib/useMessages";
 import type { Member } from "../members";
 import Avatar from "./Avatar";
@@ -30,7 +30,7 @@ function hhmm(iso: string) {
 export default function Chat({ messages, members, identity, onSend, onPickIdentity }: Props) {
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
-  const memberOf = (n: string) => members.find((m) => m.name === n);
+  const memberMap = useMemo(() => new Map(members.map((member) => [member.name, member])), [members]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -45,13 +45,18 @@ export default function Chat({ messages, members, identity, onSend, onPickIdenti
 
   return (
     <div className="chat-screen">
+      <div className="chat-day-label">Bugün</div>
       <div className="chat-list" ref={listRef}>
         {messages.length === 0 ? (
-          <div className="chat-empty">İlk mesajı sen yaz ✍️</div>
+          <div className="chat-empty">
+            <strong>Bugün henüz mesaj yok</strong>
+            <span>İlk mesajı sen yaz.</span>
+          </div>
         ) : (
           messages.map((m) => {
             const mine = m.sender === identity;
             const tone = mine ? "peach" : senderTone(m.sender);
+            const sender = memberMap.get(m.sender);
             return (
               <div
                 className={`msg-row ${mine ? "mine" : ""} ${m.pending ? "pending" : ""} ${m.failed ? "failed" : ""}`}
@@ -63,10 +68,10 @@ export default function Chat({ messages, members, identity, onSend, onPickIdenti
                     style={tone === "tile" ? { color: senderColor(m.sender) } : undefined}
                   >
                     <span className="msg-ava" aria-hidden>
-                      {memberOf(m.sender)?.avatar_url ? (
-                        <Avatar emoji={memberOf(m.sender)?.emoji ?? "🙂"} color={memberOf(m.sender)?.color ?? "#f2711c"} avatarUrl={memberOf(m.sender)?.avatar_url} size={18} />
+                      {sender?.avatar_url ? (
+                        <Avatar emoji={sender.emoji} color={sender.color} avatarUrl={sender.avatar_url} size={18} />
                       ) : (
-                        <span className="msg-ava-emoji">{memberOf(m.sender)?.emoji ?? "🙂"}</span>
+                        <span className="msg-ava-emoji">{sender?.emoji ?? "🙂"}</span>
                       )}
                     </span>
                     {m.sender}

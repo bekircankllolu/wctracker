@@ -42,7 +42,7 @@
   position: absolute; right: -2px; top: -2px; width: 11px; height: 11px;
   border-radius: 50%; background: var(--peach); border: 2px solid var(--tile);
 }
-.visit-pill { background: var(--butter); color: var(--butter-ink); font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: var(--pill); white-space: nowrap; }
+.visit-pill { min-height: 34px; display: inline-grid; place-items: center; background: var(--butter); color: var(--butter-ink); font-size: 12px; font-weight: 700; line-height: 1; text-align: center; padding: 8px 14px; border-radius: var(--pill); white-space: nowrap; }
 
 /* ---------- Avatar ---------- */
 .avatar-img { object-fit: cover; display: block; flex-shrink: 0; }
@@ -172,9 +172,12 @@
 .photo-remove { background: var(--tile); color: var(--ink-dim); font-weight: 600; font-size: 13px; padding: 0 16px; border-radius: var(--pill); }
 
 /* ---------- Sohbet ---------- */
-.chat-screen { display: flex; flex-direction: column; gap: 12px; }
-.chat-list { display: flex; flex-direction: column; gap: 12px; max-height: 58dvh; overflow-y: auto; }
-.chat-empty { color: var(--ink-dim); font-weight: 500; text-align: center; padding: 20px; }
+.chat-screen { height: calc(100dvh - 200px); min-height: 420px; display: flex; flex-direction: column; gap: 10px; }
+.chat-day-label { align-self: center; background: var(--tile); color: var(--ink-dim); border-radius: var(--pill); padding: 5px 12px; font-size: 11px; font-weight: 700; }
+.chat-list { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding: 2px 2px 8px; }
+.chat-empty { margin: auto; display: flex; flex-direction: column; gap: 4px; color: var(--ink-dim); text-align: center; padding: 24px; }
+.chat-empty strong { color: var(--ink); font-size: 15px; }
+.chat-empty span { font-size: 13px; font-weight: 500; }
 .msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 78%; align-self: flex-start; animation: msg-in 0.2s ease-out; }
 /* Her mesaj (mount olduğunda) alttan hafif kayarak belirir; React key'leri
    sayesinde yalnızca yeni gelen mesaj animasyon alır, eskiler sabit kalır. */
@@ -197,7 +200,7 @@
 .msg-row.pending { opacity: 0.6; }
 .msg-row.failed .bubble { background: var(--danger); }
 .msg-row.failed .msg-time { color: var(--danger-ink); }
-.chat-input-row { display: flex; gap: 8px; align-items: center; }
+.chat-input-row { flex-shrink: 0; display: flex; gap: 8px; align-items: center; padding-bottom: 2px; }
 .chat-input { flex: 1; min-width: 0; background: var(--tile); border: 1px solid transparent; border-radius: var(--pill); padding: 14px 18px; font-size: 16px; font-weight: 500; color: var(--ink); outline: none; transition: border-color 0.2s ease; }
 .chat-input:focus { border-color: var(--ink-dim); }
 .chat-send { width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; }
@@ -206,6 +209,9 @@
 .chat-pick { width: 100%; background: var(--tile); color: var(--ink-mid); font-weight: 600; padding: 13px; border-radius: var(--pill); }
 
 /* ---------- Takvim ---------- */
+.cal-summary { width: 100%; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--tile); color: var(--ink); border-radius: var(--radius-row); padding: 14px 18px; text-align: left; font-size: 16px; font-weight: 700; }
+.cal-summary-arrow { flex-shrink: 0; color: var(--ink-dim); font-size: 22px; line-height: 1; transition: transform 0.2s ease; }
+.cal-summary-arrow.open { transform: rotate(180deg); }
 .cal-panel { display: flex; flex-direction: column; }
 .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .cal-arrow { width: 34px; height: 34px; border-radius: 50%; background: var(--card); color: var(--ink); font-size: 17px; font-weight: 700; display: grid; place-items: center; }
@@ -229,8 +235,7 @@
 .cal-legend-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--peach); flex-shrink: 0; }
 
 /* ---------- Şampiyon kartı ---------- */
-.champ-card { display: flex; align-items: center; gap: 14px; background: var(--butter); border-radius: var(--radius-tile); padding: 16px 18px; color: #111111; }
-.champ-emoji { font-size: 30px; line-height: 1; }
+.champ-card { display: flex; align-items: center; gap: 12px; background: var(--butter); border-radius: var(--radius-tile); padding: 14px 16px; color: #111111; }
 .champ-text { flex: 1; display: flex; flex-direction: column; }
 .champ-label { font-size: 12px; color: var(--butter-ink); font-weight: 500; }
 .champ-name { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
@@ -241,21 +246,20 @@
 .seg-btn.on { background: var(--ink); color: var(--on-ink); }
 
 /* ---------- Lig (liderlik tablosu) ---------- */
-.lb-list { display: flex; flex-direction: column; gap: 10px; }
+.stats-content { display: flex; flex-direction: column; gap: 10px; }
+.stats-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stats-overview > div { min-width: 0; min-height: 66px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: var(--tile); border-radius: var(--radius-row); padding: 9px 5px; text-align: center; }
+.stats-overview strong { max-width: 100%; color: var(--ink); font-size: 14px; line-height: 1.1; overflow-wrap: anywhere; }
+.stats-overview span { color: var(--ink-dim); font-size: 10.5px; font-weight: 600; }
+.lb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.lb-card { position: relative; min-width: 0; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; background: var(--tile); color: var(--ink); border-radius: var(--radius-row); padding: 12px 6px 10px; text-align: center; }
+.lb-card.first { background: var(--butter); color: #111111; }
+.lb-card:active { transform: scale(0.98); }
+.lb-card-rank { position: absolute; top: 8px; left: 8px; width: 23px; height: 23px; display: grid; place-items: center; background: var(--card); color: var(--ink-mid); border-radius: 50%; font-size: 11px; font-weight: 700; }
+.lb-card.first .lb-card-rank { background: #111111; color: var(--butter); }
+.lb-card-name { max-width: 100%; font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-card-count { color: var(--ink-mid); font-size: 11px; font-weight: 700; }
 .lb-item { display: flex; align-items: center; gap: 12px; background: var(--tile); border-radius: 20px; padding: 12px 14px; color: var(--ink); }
-.lb-item.first { background: var(--butter); color: #111111; }
-.lb-item.tappable { width: 100%; text-align: left; transition: transform 0.12s ease; }
-.lb-item.tappable:active { transform: scale(0.99); }
-.lb-rank {
-  width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
-  background: var(--card); color: var(--ink-mid);
-  display: grid; place-items: center; font-size: 13px; font-weight: 700;
-}
-.lb-rank .app-icon { width: 30px; height: 30px; }
-.lb-item.first .lb-rank { background: #111111; color: var(--butter); }
-.lb-name { flex: 1; font-weight: 700; font-size: 16px; }
-.lb-pill { background: var(--card); color: var(--ink-mid); font-size: 11.5px; font-weight: 700; padding: 5px 11px; border-radius: var(--pill); white-space: nowrap; }
-.lb-item.first .lb-pill { background: var(--ink); color: var(--on-ink); }
 .lb-item.record { background: var(--lavender); color: #111111; gap: 12px; }
 .rec-emoji { width: 34px; height: 34px; line-height: 1; display: grid; place-items: center; }
 .rec-emoji .app-icon { width: 100%; height: 100%; animation: icon-float 3s ease-in-out infinite; }
@@ -360,11 +364,13 @@
 .sheet-hint { color: var(--ink-dim); font-weight: 500; font-size: 13px; }
 
 /* Menü çekmecesi */
-.menu-section-label { color: var(--ink-dim); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
-.theme-seg { display: flex; gap: 8px; }
-.theme-opt { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--tile); border: 2px solid transparent; border-radius: 16px; padding: 13px 6px; font-weight: 500; font-size: 12.5px; color: var(--ink-mid); transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease; }
-.theme-opt .theme-ico { font-size: 22px; }
-.theme-opt.on { background: var(--butter); border-color: var(--ink); color: var(--ink); font-weight: 700; }
+.menu-setting { display: flex; flex-direction: column; gap: 10px; background: var(--tile); border-radius: var(--radius-row); padding: 13px 14px; }
+.menu-setting-copy { display: flex; flex-direction: column; }
+.menu-setting-copy strong { color: var(--ink); font-size: 14.5px; }
+.menu-setting-copy small { color: var(--ink-dim); font-size: 12px; font-weight: 500; }
+.theme-toggle { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; background: var(--card); border-radius: var(--pill); padding: 3px; }
+.theme-toggle-btn { min-width: 0; min-height: 34px; border-radius: var(--pill); color: var(--ink-mid); font-size: 12px; font-weight: 700; }
+.theme-toggle-btn.on { background: var(--ink); color: var(--on-ink); }
 .menu-row { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--tile); border-radius: var(--radius-row); padding: 13px 14px; text-align: left; }
 .menu-row:active { transform: scale(0.99); }
 .menu-row:disabled { opacity: 0.6; }
@@ -398,7 +404,6 @@
 .menu-row-text strong { font-size: 14.5px; font-weight: 700; color: var(--ink); }
 .menu-row-text small { color: var(--ink-dim); font-size: 12px; font-weight: 500; }
 .menu-row-arrow { color: var(--ink-dim); font-size: 20px; line-height: 1; flex-shrink: 0; }
-.menu-foot { text-align: center; color: var(--ink-dim); font-size: 11.5px; font-weight: 500; margin-top: 6px; }
 .menu-note { display: flex; align-items: center; gap: 10px; color: var(--butter-ink); font-weight: 500; font-size: 13px; background: var(--butter); border-radius: var(--radius-row); padding: 13px 14px; }
 .menu-note-icon { width: 18px; height: 18px; flex-shrink: 0; }
 .push-switch { width: 48px; height: 28px; border-radius: 999px; background: var(--track); flex-shrink: 0; padding: 3px; transition: background 0.2s ease; display: block; }
@@ -438,12 +443,12 @@
 .identity-clear { text-align: center; background: var(--tile); color: var(--ink-mid); border-radius: var(--pill); padding: 13px; font-size: 13.5px; font-weight: 700; }
 
 /* ---------- Mikro-etkileşim: press feedback + klavye odağı ---------- */
-.seg-btn, .theme-opt, .queue-btn, .btn-primary, .btn-ghost, .chat-send,
+.seg-btn, .theme-toggle-btn, .queue-btn, .btn-primary, .btn-ghost, .chat-send,
 .identity-opt, .emoji-opt, .roster-edit, .roster-del, .sheet-close,
 .cal-arrow, .photo-btn, .link-btn {
   transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease, border-color 0.18s ease;
 }
-.seg-btn:active, .theme-opt:active, .queue-btn:active,
+.seg-btn:active, .theme-toggle-btn:active, .queue-btn:active,
 .btn-primary:not(:disabled):active, .btn-ghost:active, .chat-send:not(:disabled):active,
 .identity-opt:active, .emoji-opt:active, .roster-edit:active, .roster-del:active,
 .sheet-close:active, .photo-btn:not(:disabled):active {

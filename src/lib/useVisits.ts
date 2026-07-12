@@ -60,6 +60,18 @@ function computeStats(allVisits: Visit[]): Stats {
 
 export function useVisits() {
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [todayKey, setTodayKey] = useState(() => new Date().toDateString());
+
+  useEffect(() => {
+    const now = new Date();
+    const nextDay = new Date(now);
+    nextDay.setHours(24, 0, 0, 0);
+    const timer = window.setTimeout(
+      () => setTodayKey(new Date().toDateString()),
+      nextDay.getTime() - now.getTime() + 250,
+    );
+    return () => window.clearTimeout(timer);
+  }, [todayKey]);
 
   useEffect(() => {
     let active = true;
@@ -91,10 +103,18 @@ export function useVisits() {
   }, []);
 
   const stats = useMemo(() => computeStats(visits), [visits]);
+  const statsToday = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return computeStats(visits.filter((v) => new Date(v.created_at).getTime() >= today.getTime()));
+  }, [visits, todayKey]);
   const statsWeek = useMemo(() => {
-    const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
-    return computeStats(visits.filter((v) => new Date(v.created_at).getTime() >= weekAgo));
-  }, [visits]);
+    const monday = new Date();
+    const day = (monday.getDay() + 6) % 7;
+    monday.setHours(0, 0, 0, 0);
+    monday.setDate(monday.getDate() - day);
+    return computeStats(visits.filter((v) => new Date(v.created_at).getTime() >= monday.getTime()));
+  }, [visits, todayKey]);
 
-  return { stats, statsWeek, visits };
+  return { stats, statsToday, statsWeek, visits };
 }

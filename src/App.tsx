@@ -49,7 +49,7 @@ export default function App() {
     enter, exit, updateNote, updatePhoto, updateSmell, updatePaper,
   } = useWcState(identity);
   const { members, addMember, updateMember, removeMember } = useMembers();
-  const { stats, statsWeek, visits } = useVisits();
+  const { stats, statsToday, statsWeek, visits } = useVisits();
   const { messages, send } = useMessages();
   const { queue, join: joinQueue, leave: leaveQueue } = useQueue();
   const push = usePush();
@@ -286,7 +286,7 @@ export default function App() {
           ) : (
             <>
               <Calendar members={members} visits={visits} />
-              <StatsPanel stats={stats} statsWeek={statsWeek} members={members} visits={visits} />
+              <StatsPanel stats={stats} statsToday={statsToday} statsWeek={statsWeek} members={members} visits={visits} />
             </>
           )}
         </main>

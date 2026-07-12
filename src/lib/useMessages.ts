@@ -13,27 +13,48 @@ export type Message = {
 export const CHAT_MAX = 100;
 const SELECT = "id, sender, body, created_at";
 
+function dayKey(date = new Date()) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function startOfDayIso() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date.toISOString();
+}
+
 function tempId() {
   return `temp-${(crypto as { randomUUID?: () => string }).randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
 }
 
 export function useMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [todayKey, setTodayKey] = useState(dayKey);
+
+  useEffect(() => {
+    const now = new Date();
+    const nextDay = new Date(now);
+    nextDay.setHours(24, 0, 0, 0);
+    const timer = window.setTimeout(() => setTodayKey(dayKey()), nextDay.getTime() - now.getTime() + 250);
+    return () => window.clearTimeout(timer);
+  }, [todayKey]);
 
   useEffect(() => {
     let active = true;
+    setMessages([]);
     supabase
       .from("messages")
       .select(SELECT)
+      .gte("created_at", startOfDayIso())
       .order("created_at", { ascending: false })
-      .limit(30)
+      .limit(50)
       .then(({ data }) => {
         if (active && data) setMessages((data as Message[]).reverse());
       });
     return () => {
       active = false;
     };
-  }, []);
+  }, [todayKey]);
 
   useEffect(() => {
     const channel = supabase
@@ -44,6 +65,7 @@ export function useMessages() {
         (payload) => {
           setMessages((prev) => {
             const msg = payload.new as Message;
+            if (dayKey(new Date(msg.created_at)) !== todayKey) return prev;
             if (prev.some((m) => m.id === msg.id)) return prev;
             // Kendi optimistik mesajımızın echo'su geldiyse onu gerçekle değiştir.
             const idx = prev.findIndex(
@@ -62,7 +84,7 @@ export function useMessages() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [todayKey]);
 
   const send = useCallback(async (sender: string, body: string) => {
     const trimmed = body.trim().slice(0, CHAT_MAX);

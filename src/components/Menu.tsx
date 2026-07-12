@@ -15,10 +15,10 @@ type Props = {
   onClose: () => void;
 };
 
-const THEMES: { key: ThemeChoice; label: string; icon: string }[] = [
-  { key: "system", label: "Sistem", icon: "🖥️" },
-  { key: "light", label: "Açık", icon: "☀️" },
-  { key: "dark", label: "Koyu", icon: "🌙" },
+const THEMES: { key: ThemeChoice; label: string }[] = [
+  { key: "light", label: "Açık" },
+  { key: "dark", label: "Koyu" },
+  { key: "system", label: "Sistem" },
 ];
 
 export default function Menu({
@@ -32,22 +32,25 @@ export default function Menu({
           <button className="sheet-close" onClick={onClose} aria-label="Kapat">✕</button>
         </div>
 
-        <div className="menu-section-label">Görünüm</div>
-        <div className="theme-seg" role="group" aria-label="Tema">
-          {THEMES.map((t) => (
-            <button
-              key={t.key}
-              className={`theme-opt ${theme === t.key ? "on" : ""}`}
-              onClick={() => onTheme(t.key)}
-              aria-pressed={theme === t.key}
-            >
-              <span className="theme-ico" aria-hidden>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          ))}
+        <div className="menu-setting">
+          <div className="menu-setting-copy">
+            <strong>Görünüm</strong>
+            <small>Uygulama teması</small>
+          </div>
+          <div className="theme-toggle" role="group" aria-label="Tema">
+            {THEMES.map((t) => (
+              <button
+                key={t.key}
+                className={`theme-toggle-btn ${theme === t.key ? "on" : ""}`}
+                onClick={() => onTheme(t.key)}
+                aria-pressed={theme === t.key}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="menu-section-label">Bildirimler</div>
         {push.supported ? (
           <button className="menu-row" onClick={onTogglePush} disabled={push.busy}>
             <span className="menu-row-left">
@@ -69,7 +72,6 @@ export default function Menu({
           </div>
         )}
 
-        <div className="menu-section-label">Kim</div>
         <button className="menu-row" onClick={() => { onClose(); onPickIdentity(); }}>
           <span className="menu-row-left">
             {me ? (
@@ -85,7 +87,6 @@ export default function Menu({
           <span className="menu-row-arrow" aria-hidden>›</span>
         </button>
 
-        <div className="menu-section-label">Aile</div>
         <button className="menu-row" onClick={() => { onClose(); onManageRoster(); }}>
           <span className="menu-row-left">
             <span className="menu-row-emoji" aria-hidden>👨‍👩‍👧‍👦</span>
@@ -96,8 +97,6 @@ export default function Menu({
           </span>
           <span className="menu-row-arrow" aria-hidden>›</span>
         </button>
-
-        <p className="menu-foot">WC Tracker · aile tuvalet takip</p>
       </div>
     </div>
   );
