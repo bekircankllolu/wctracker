@@ -51,37 +51,44 @@ export default function StatusCard({
 
   if (phase === "free") {
     return (
-      <div className="hero hero--mint hero--bg-free hero--center">
-        <span className="hero-pill self">● BOŞ</span>
-        <div className="hero-center-block">
-          <span className="hero-emoji hero-icon hero-icon--toilet big" aria-hidden><AppIcon name="toilet" /></span>
-          <span className="hero-title">Müsait</span>
-          <span className="hero-sub center">Tuvalet boş, buyurun</span>
+      <div className="hero hero--mint">
+        <video className="hero-video" src="/hero-bg-free.mp4" poster="/hero-bg-free.jpg" autoPlay loop muted playsInline />
+        <div className="hero-content">
+          <div className="hero-top">
+            <span className="hero-pill self">● BOŞ</span>
+          </div>
+          <div className="hero-center-block">
+            <span className="hero-title">Müsait</span>
+            <span className="hero-sub">Tuvalet boş, buyurun</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`hero hero--peach hero--bg-occupied ${poked ? "poked" : ""}`}>
-      <div className="hero-top">
-        <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
-        <span className="hero-avatar">
-          {avatarUrl ? (
-            <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={52} />
-          ) : (
-            <span className="hero-avatar-emoji" aria-hidden>{emoji}</span>
-          )}
-        </span>
+    <div className={`hero hero--peach ${poked ? "poked" : ""}`}>
+      <video className="hero-video" src="/hero-bg-occupied.mp4" poster="/hero-bg-occupied.jpg" autoPlay loop muted playsInline />
+      <div className="hero-content">
+        <div className="hero-top">
+          <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
+          <span className="hero-avatar">
+            {avatarUrl ? (
+              <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={52} />
+            ) : (
+              <span className="hero-avatar-emoji" aria-hidden>{emoji}</span>
+            )}
+          </span>
+        </div>
+        <div className="hero-center-block">
+          <span className="hero-time">{clock(elapsed)}</span>
+          <span className="hero-sub">
+            {amOccupant ? `Rahat ol ${identity}, süre işliyor 🚽` : `${occupant} içeride · şu kadar süredir 🚽`}
+          </span>
+        </div>
+        {note ? <span className="hero-note">“{note}”</span> : null}
+        {photoUrl ? <img className="hero-photo" src={photoUrl} alt="Tuvaletten kare" loading="lazy" /> : null}
       </div>
-      <div className="hero-time-block">
-        <span className="hero-time">{clock(elapsed)}</span>
-        <span className="hero-sub">
-          {amOccupant ? `Rahat ol ${identity}, süre işliyor 🚽` : `${occupant} içeride · şu kadar süredir 🚽`}
-        </span>
-      </div>
-      {note ? <span className="hero-note">“{note}”</span> : null}
-      {photoUrl ? <img className="hero-photo" src={photoUrl} alt="Tuvaletten kare" loading="lazy" /> : null}
     </div>
   );
 }
