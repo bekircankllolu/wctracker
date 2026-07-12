@@ -1,5 +1,4 @@
 import Avatar from "./Avatar";
-import AppIcon from "./AppIcon";
 import { useElapsed, useCountdown } from "../lib/timers";
 import type { Phase } from "../lib/useWcState";
 
@@ -46,12 +45,25 @@ export default function StatusCard({
 
   if (phase === "cooldown") {
     return (
-      <div className="hero hero--butter hero--center">
-        <span className="hero-pill self"><span className="live-dot" aria-hidden />HAVALANDIRILIYOR</span>
-        <span className="hero-emoji hero-icon hero-icon--smell" aria-hidden><AppIcon name="smell-awful" /></span>
-        <span className="hero-clock">{mmss(cooldownMs)}</span>
-        <span className="hero-sub center">Leş gibi kokuyor, biraz bekleyelim</span>
-        {multiplier > 1 ? <span className="hero-chip">koku çarpanı ×{multiplier}</span> : null}
+      <div className="hero hero--butter hero--cooldown">
+        <video
+          className="hero-video hero-video--cooldown"
+          src="/hero-bg-cooldown.mp4"
+          poster="/hero-bg-cooldown.jpg"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        />
+        <div className="hero-cooldown-content">
+          <span className="hero-pill self"><span className="live-dot" aria-hidden />HAVALANDIRILIYOR</span>
+          <div className="hero-cooldown-copy">
+            <span className="hero-clock">{mmss(cooldownMs)}</span>
+            <span className="hero-sub center">Leş gibi kokuyor, biraz bekleyelim</span>
+            {multiplier > 1 ? <span className="hero-chip">koku çarpanı ×{multiplier}</span> : null}
+          </div>
+        </div>
       </div>
     );
   }
