@@ -1,5 +1,6 @@
 import type { Member } from "../members";
 import type { Visit } from "../lib/useVisits";
+import { fmtDuration as fmt, MAX_REASONABLE_STAY } from "../lib/format";
 import Avatar from "./Avatar";
 
 type Props = {
@@ -11,15 +12,9 @@ type Props = {
 
 const DAY_LABELS = ["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"];
 
-function fmt(sec: number): string {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  if (m === 0) return `${s} sn`;
-  return `${m} dk ${s} sn`;
-}
-
 export default function MemberDetail({ name, member, visits, onClose }: Props) {
-  const mine = visits.filter((v) => v.member_name === name);
+  // Anormal (sayaç unutulmuş) oturumları ortalama/en uzun hesabına katma.
+  const mine = visits.filter((v) => v.member_name === name && v.duration_seconds <= MAX_REASONABLE_STAY);
   const count = mine.length;
   const total = mine.reduce((a, v) => a + v.duration_seconds, 0);
   const avg = count ? Math.round(total / count) : 0;

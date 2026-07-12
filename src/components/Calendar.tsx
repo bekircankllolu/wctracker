@@ -2,6 +2,7 @@ import { useState } from "react";
 import Avatar from "./Avatar";
 import type { Member } from "../members";
 import type { Visit } from "../lib/useVisits";
+import { MAX_REASONABLE_STAY } from "../lib/format";
 
 const DAYS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -9,10 +10,14 @@ const key = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 type Props = { members: Member[]; visits: Visit[] };
 
-export default function Calendar({ members, visits }: Props) {
+export default function Calendar({ members, visits: allVisits }: Props) {
   const today = new Date();
   const [view, setView] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const memberOf = (n: string) => members.find((m) => m.name === n);
+
+  // Anormal (sayaç unutulmuş) oturumları takvim/şampiyon sayımına katma —
+  // liderlik tablosuyla tutarlı kalsın.
+  const visits = allVisits.filter((v) => v.duration_seconds <= MAX_REASONABLE_STAY);
 
   const byDay = new Map<string, Map<string, number>>();
   for (const v of visits) {
@@ -66,11 +71,7 @@ export default function Calendar({ members, visits }: Props) {
             return (
               <span key={i} className={`cal-cell ${!inMonth ? "out" : ""} ${isToday ? "today" : ""}`}>
                 <span className="cal-num">{d.getDate()}</span>
-                {isToday && info ? (
-                  <span className="cal-todaycount">{info.total}</span>
-                ) : info ? (
-                  <span className="cal-dot" style={{ background: col }} />
-                ) : null}
+                {info ? <span className="cal-dot" style={{ background: col }} /> : null}
               </span>
             );
           })}
