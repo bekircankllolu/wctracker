@@ -35,8 +35,16 @@
   position: relative; width: 42px; height: 42px; border-radius: 14px;
   background: var(--tile); display: grid; place-items: center; color: var(--ink); flex-shrink: 0;
 }
-.tb-icon-btn .app-icon { width: 28px; height: 28px; }
-:root[data-theme="dark"] .tb-icon-btn .app-icon { filter: brightness(2.35) saturate(0.85); }
+.menu-glyph {
+  width: 26px; height: 28px; display: grid; grid-template-rows: repeat(3, 4px) 5px;
+  align-content: center; justify-items: start; gap: 3px;
+}
+.menu-glyph-line {
+  width: 24px; height: 4px; border-radius: 999px; background: currentColor;
+}
+.menu-glyph-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--mint);
+}
 .tb-icon-btn:active, .avatar-chip:active { transform: scale(0.94); }
 .avatar-emoji { font-size: 20px; line-height: 1; }
 .avatar-badge {

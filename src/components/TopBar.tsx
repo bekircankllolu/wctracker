@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import AppIcon from "./AppIcon";
 
 type Props = {
   title: string;
@@ -14,7 +13,12 @@ export default function TopBar({ title, onMenu, right }: Props) {
       <div className="tb-right">
         {onMenu ? (
           <button className="tb-icon-btn" onClick={onMenu} aria-label="Menü">
-            <AppIcon name="menu" />
+            <span className="menu-glyph" aria-hidden="true">
+              <span className="menu-glyph-line" />
+              <span className="menu-glyph-line" />
+              <span className="menu-glyph-line" />
+              <span className="menu-glyph-dot" />
+            </span>
           </button>
         ) : null}
         {right}
