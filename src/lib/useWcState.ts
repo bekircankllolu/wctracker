@@ -132,12 +132,10 @@ export function useWcState(identity: string | null) {
   const updatePhoto = useCallback((url: string | null) => guardedUpdate({ photo_url: url }), [guardedUpdate]);
   const updateSmell = useCallback((level: number) => guardedUpdate({ smell_level: level }), [guardedUpdate]);
 
-  // Kağıt herkes tarafından güncellenebilir (dolduran kişi).
-  const updatePaper = useCallback(async (level: number) => {
+  const updatePaper = useCallback((level: number) => {
     const v = Math.max(0, Math.min(100, Math.round(level)));
-    setState((prev) => ({ ...prev, paper_level: v }));
-    await supabase.from("wc_state").update({ paper_level: v }).eq("id", ROW_ID);
-  }, []);
+    return guardedUpdate({ paper_level: v });
+  }, [guardedUpdate]);
 
   const inCooldown =
     !state.occupant &&

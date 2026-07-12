@@ -198,10 +198,9 @@ export default function App() {
 
   const meters = (
     <ToiletMeters
-      phase={phase}
       paperLevel={state.paper_level}
       smellLevel={state.smell_level}
-      canSetSmell={amOccupant}
+      canEdit={amOccupant}
       onPaper={updatePaper}
       onSmell={updateSmell}
     />
