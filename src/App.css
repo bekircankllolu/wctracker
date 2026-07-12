@@ -79,6 +79,7 @@
 .hero-avatar-emoji { font-size: 26px; line-height: 1; }
 .hero-time { font-size: var(--text-display); font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
 .hero-sub { font-size: 14px; font-weight: 500; line-height: 1.3; color: #7a4632; }
+.hero-sub--stacked { display: flex; flex-direction: column; gap: 2px; }
 .hero-sub.center { color: var(--mint-ink); }
 .hero--butter .hero-sub.center { color: var(--butter-ink); }
 .hero-note {
