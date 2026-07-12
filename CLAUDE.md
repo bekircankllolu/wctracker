@@ -127,6 +127,40 @@ trusting time elapsed.
 Supabase project: ref `gvguizpedddtivnqaaqt` (org `wctracker`, region
 `eu-central-1`).
 
+## Android publishing (TWA)
+
+The PWA is published to the Play Store as a **Trusted Web Activity** — a
+thin native wrapper around the deployed `wctracker-pi.vercel.app` site, not
+a separate codebase. There is no local Android project checked in; the
+manifest/service worker/icons already in `public/` are the only inputs it
+needs.
+
+- **Recommended tool:** [PWABuilder.com](https://www.pwabuilder.com) —
+  point it at `https://wctracker-pi.vercel.app`, it validates the manifest,
+  generates a signed Android App Bundle, and produces the
+  `.well-known/assetlinks.json` content for you. No local Android
+  SDK/Gradle setup needed. `@bubblewrap/cli` is the CLI equivalent if a
+  local Android Studio project is ever wanted instead, but it requires a
+  full Android SDK toolchain.
+- **Package ID:** `tr.bekircankllolu.wctracker` — fixed forever once the
+  first version is uploaded to Play Console, choose deliberately if
+  changing it.
+- **Signing key:** back up the keystore + password somewhere durable the
+  moment it's generated (password manager, not just this repo's
+  container) — losing it means never being able to ship an update to the
+  same Play Store listing again. Prefer opting into **Play App Signing**
+  during first upload so Google escrows the real signing key and only the
+  upload key needs care.
+- **`.well-known/assetlinks.json`** must be added to `public/` (served at
+  `wctracker-pi.vercel.app/.well-known/assetlinks.json`) with the real
+  SHA-256 cert fingerprint before the TWA will open without browser
+  chrome — PWABuilder gives you this file directly.
+- **Privacy policy** for the Play Console listing: `public/privacy.html`
+  (`wctracker-pi.vercel.app/privacy.html`).
+- **Play Console requirement:** new developer accounts must run a closed
+  test with 20+ opted-in testers for 14 days before the production track
+  unlocks — factor this into timeline even for a family-only app.
+
 ## Git workflow used in this repo's history
 
 Every change so far has landed as: create a branch off `main`
