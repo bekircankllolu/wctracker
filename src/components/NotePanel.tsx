@@ -49,7 +49,10 @@ export default function NotePanel({ note, onSave }: Props) {
           Kaydet
         </button>
       </div>
-      <div className="note-count">{text.length}/{NOTE_MAX}</div>
+      {/* Sayaç dolarken renk değişir: yaklaşınca turuncu, sınırda kırmızı. */}
+      <div className={`note-count ${text.length >= NOTE_MAX ? "full" : text.length >= NOTE_MAX * 0.85 ? "near" : ""}`}>
+        {text.length}/{NOTE_MAX}
+      </div>
     </div>
   );
 }

@@ -279,6 +279,7 @@ export default function App() {
           ) : tab === "sohbet" ? (
             <Chat
               messages={messages}
+              members={members}
               identity={identity}
               onSend={(body) => (identity ? send(identity, body) : setIdentityOpen(true))}
               onPickIdentity={() => setIdentityOpen(true)}

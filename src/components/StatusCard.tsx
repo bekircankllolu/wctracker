@@ -31,6 +31,18 @@ const mmss = (ms: number) => {
   return `${Math.floor(s / 60)}:${pad(s % 60)}`;
 };
 
+// Süreye göre canlı, esprili alt-mesaj (kısa tutulur; hero sol sütununa sığar).
+function occupiedSub(elapsed: number, amOccupant: boolean, who: string): string {
+  if (amOccupant) {
+    if (elapsed < 300) return `Rahat ol ${who}, süre işliyor`;
+    if (elapsed < 900) return `${who}, acelesi yok`;
+    return `${who}, kitap mı okuyoruz? 📖`;
+  }
+  if (elapsed < 300) return `${who} içeride`;
+  if (elapsed < 900) return `${who} bir süredir içeride`;
+  return `${who} epeydir içeride 👀`;
+}
+
 export default function StatusCard({
   phase, occupant, enteredAt, note, photoUrl, emoji, color, avatarUrl, amOccupant, identity, poked, cooldownUntil, multiplier,
 }: Props) {
@@ -83,7 +95,7 @@ export default function StatusCard({
         <div className="hero-center-block">
           <span className="hero-time">{clock(elapsed)}</span>
           <span className="hero-sub">
-            {amOccupant ? `Rahat ol ${identity}, süre işliyor` : `${occupant} içeride`}
+            {occupiedSub(elapsed, amOccupant, amOccupant ? (identity ?? "") : (occupant ?? ""))}
           </span>
         </div>
         {note ? <span className="hero-note">“{note}”</span> : null}

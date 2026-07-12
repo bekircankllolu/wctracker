@@ -60,7 +60,13 @@ export default function Menu({
             <span className={`push-switch ${push.enabled ? "on" : ""}`} aria-hidden><span /></span>
           </button>
         ) : (
-          <div className="menu-note">Bu cihaz/tarayıcı push bildirimini desteklemiyor.</div>
+          <div className="menu-note">
+            <svg className="menu-note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 11v5M12 7.5v.5" />
+            </svg>
+            <span>Bu cihaz/tarayıcı push bildirimini desteklemiyor.</span>
+          </div>
         )}
 
         <div className="menu-section-label">Kim</div>

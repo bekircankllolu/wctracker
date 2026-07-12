@@ -41,7 +41,7 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
       {/* Kağıt herkes tarafından ayarlanabilir — koku gibi dokununca doğrudan değişir.
           Seviyeler artan doluluk çubuğuyla gösterilir (az → çok). */}
       <div className="tile tile--mint meter-tile">
-        <span className="tile-label mint">Kağıt</span>
+        <span className="tile-label mint">Kağıt · sen ayarla</span>
         <span className="tile-value">{paper.label}</span>
         <div className="meter-seg">
           {PAPER.map((p, i) => (

@@ -77,6 +77,7 @@ export default function Calendar({ members, visits: allVisits }: Props) {
             );
           })}
         </div>
+        <p className="cal-legend"><span className="cal-legend-dot" /> Nokta = o gün en çok giren kişinin rengi</p>
       </div>
 
       <div className="champ-card">
