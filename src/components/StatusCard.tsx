@@ -40,7 +40,7 @@ export default function StatusCard({
   if (phase === "cooldown") {
     return (
       <div className="hero hero--butter hero--center">
-        <span className="hero-pill self">● HAVALANDIRILIYOR</span>
+        <span className="hero-pill self"><span className="live-dot" aria-hidden />HAVALANDIRILIYOR</span>
         <span className="hero-emoji hero-icon hero-icon--smell" aria-hidden><AppIcon name="smell-awful" /></span>
         <span className="hero-clock">{mmss(cooldownMs)}</span>
         <span className="hero-sub center">Leş gibi kokuyor, biraz bekleyelim</span>
@@ -55,7 +55,7 @@ export default function StatusCard({
         <video className="hero-video" src="/hero-bg-free.mp4" poster="/hero-bg-free.jpg" autoPlay loop muted playsInline />
         <div className="hero-content">
           <div className="hero-top">
-            <span className="hero-pill self">● BOŞ</span>
+            <span className="hero-pill self"><span className="live-dot" aria-hidden />BOŞ</span>
           </div>
           <div className="hero-center-block">
             <span className="hero-title">Müsait</span>
@@ -71,7 +71,7 @@ export default function StatusCard({
       <video className="hero-video" src="/hero-bg-occupied.mp4" poster="/hero-bg-occupied.jpg" autoPlay loop muted playsInline />
       <div className="hero-content">
         <div className="hero-top">
-          <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
+          <span className="hero-pill"><span className="live-dot pulse" aria-hidden />{amOccupant ? "SEN İÇERİDESİN" : "DOLU"}</span>
           <span className="hero-avatar">
             {avatarUrl ? (
               <Avatar emoji={emoji} color={color} avatarUrl={avatarUrl} size={52} />
