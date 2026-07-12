@@ -66,7 +66,10 @@ export default function StatusCard({
           </div>
           <div className="hero-center-block">
             <span className="hero-title">Müsait</span>
-            <span className="hero-sub">Tuvalet boş, buyurun</span>
+            <span className="hero-sub hero-sub--stacked">
+              <span>Tuvalet boş,</span>
+              <span>buyurun</span>
+            </span>
           </div>
         </div>
       </div>
