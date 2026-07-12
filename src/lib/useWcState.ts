@@ -31,7 +31,7 @@ const EMPTY: WcState = {
   paper_level: 100, smell_level: 0, cooldown_until: null, smell_multiplier: 1,
 };
 
-export function useWcState() {
+export function useWcState(identity: string | null) {
   const [state, setState] = useState<WcState>(EMPTY);
   const [status, setStatus] = useState<Status>("loading");
   const [busy, setBusy] = useState(false);
@@ -145,7 +145,10 @@ export function useWcState() {
     new Date(state.cooldown_until as string).getTime() > Date.now();
   const phase: Phase = state.occupant ? "occupied" : inCooldown ? "cooldown" : "free";
   const amOccupant =
-    Boolean(state.occupant) && state.occupant_token != null && state.occupant_token === tokenRef.current;
+    Boolean(state.occupant) &&
+    identity === state.occupant &&
+    state.occupant_token != null &&
+    state.occupant_token === tokenRef.current;
 
   return {
     state, status, busy, phase, amOccupant,

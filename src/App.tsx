@@ -43,16 +43,16 @@ const TAB_TITLE: Record<Tab, string> = {
 };
 
 export default function App() {
+  const { identity, setIdentity } = useIdentity();
   const {
     state, status, busy, phase, amOccupant,
     enter, exit, updateNote, updatePhoto, updateSmell, updatePaper,
-  } = useWcState();
+  } = useWcState(identity);
   const { members, addMember, updateMember, removeMember } = useMembers();
   const { stats, statsWeek, visits } = useVisits();
   const { messages, send } = useMessages();
   const { queue, join: joinQueue, leave: leaveQueue } = useQueue();
   const push = usePush();
-  const { identity, setIdentity } = useIdentity();
   const { theme, setTheme } = useTheme();
 
   const [tab, setTab] = useState<Tab>("durum");
