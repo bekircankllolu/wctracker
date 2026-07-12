@@ -36,6 +36,7 @@
   background: var(--tile); display: grid; place-items: center; color: var(--ink); flex-shrink: 0;
 }
 .tb-icon-btn .app-icon { width: 28px; height: 28px; }
+:root[data-theme="dark"] .tb-icon-btn .app-icon { filter: brightness(2.35) saturate(0.85); }
 .tb-icon-btn:active, .avatar-chip:active { transform: scale(0.94); }
 .avatar-emoji { font-size: 20px; line-height: 1; }
 .avatar-badge {
