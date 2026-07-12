@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import Avatar from "./Avatar";
 import AppIcon from "./AppIcon";
 import { useElapsed, useCountdown } from "../lib/timers";
@@ -38,24 +37,6 @@ export default function StatusCard({
   const elapsed = useElapsed(phase === "occupied" ? enteredAt : null);
   const cooldownMs = useCountdown(phase === "cooldown" ? cooldownUntil : null);
 
-  // Boş ↔ Dolu arası geçişte kısa bir geçiş videosu oynatılır, bitince o anki
-  // durumun kalıcı (loop'lu) videosuna geçilir.
-  const prevPhaseRef = useRef(phase);
-  const [transitioning, setTransitioning] = useState(false);
-  useEffect(() => {
-    const prev = prevPhaseRef.current;
-    const isSwap = (prev === "free" || prev === "occupied") && (phase === "free" || phase === "occupied") && prev !== phase;
-    if (isSwap) setTransitioning(true);
-    prevPhaseRef.current = phase;
-  }, [phase]);
-  // Video "ended" olayı bir sebeple tetiklenmezse (ör. autoplay engellenirse)
-  // geçiş ekranında takılı kalmamak için güvenlik zaman aşımı.
-  useEffect(() => {
-    if (!transitioning) return;
-    const t = setTimeout(() => setTransitioning(false), 6000);
-    return () => clearTimeout(t);
-  }, [transitioning]);
-
   if (phase === "cooldown") {
     return (
       <div className="hero hero--butter hero--center">
@@ -71,18 +52,7 @@ export default function StatusCard({
   if (phase === "free") {
     return (
       <div className="hero hero--mint">
-        {transitioning ? (
-          <video
-            key="transition-free"
-            className="hero-video"
-            src="/hero-transition.mp4"
-            poster="/hero-bg-free.jpg"
-            autoPlay muted playsInline
-            onEnded={() => setTransitioning(false)}
-          />
-        ) : (
-          <video className="hero-video" src="/hero-bg-free.mp4" poster="/hero-bg-free.jpg" autoPlay loop muted playsInline />
-        )}
+        <video className="hero-video" src="/hero-bg-free.mp4" poster="/hero-bg-free.jpg" autoPlay loop muted playsInline />
         <div className="hero-content">
           <div className="hero-top">
             <span className="hero-pill self">● BOŞ</span>
@@ -98,18 +68,7 @@ export default function StatusCard({
 
   return (
     <div className={`hero hero--peach ${poked ? "poked" : ""}`}>
-      {transitioning ? (
-        <video
-          key="transition-occupied"
-          className="hero-video"
-          src="/hero-transition.mp4"
-          poster="/hero-bg-occupied.jpg"
-          autoPlay muted playsInline
-          onEnded={() => setTransitioning(false)}
-        />
-      ) : (
-        <video className="hero-video" src="/hero-bg-occupied.mp4" poster="/hero-bg-occupied.jpg" autoPlay loop muted playsInline />
-      )}
+      <video className="hero-video" src="/hero-bg-occupied.mp4" poster="/hero-bg-occupied.jpg" autoPlay loop muted playsInline />
       <div className="hero-content">
         <div className="hero-top">
           <span className="hero-pill">{amOccupant ? "● SEN İÇERİDESİN" : "● DOLU"}</span>
@@ -124,7 +83,7 @@ export default function StatusCard({
         <div className="hero-center-block">
           <span className="hero-time">{clock(elapsed)}</span>
           <span className="hero-sub">
-            {amOccupant ? `Rahat ol ${identity}, süre işliyor 🚽` : `${occupant} içeride · şu kadar süredir 🚽`}
+            {amOccupant ? `Rahat ol ${identity}, süre işliyor` : `${occupant} içeride`}
           </span>
         </div>
         {note ? <span className="hero-note">“{note}”</span> : null}

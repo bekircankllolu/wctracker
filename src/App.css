@@ -60,7 +60,7 @@
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 .hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; height: 100%; padding: 22px 20px 20px; }
 /* Video kutunun sağ tarafını dolduruyor; metin bindirmesin diye sol boşlukta kalır. */
-.hero-center-block { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; max-width: 62%; }
+.hero-center-block { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; max-width: 54%; }
 .hero--mint .hero-sub { color: var(--mint-ink); }
 .hero.poked { animation: shake 0.5s ease; }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)} }
@@ -70,12 +70,12 @@
 .hero-pill.self { align-self: flex-start; }
 .hero-avatar { width: 52px; height: 52px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; }
 .hero-avatar-emoji { font-size: 26px; line-height: 1; }
-.hero-time { font-size: 64px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
-.hero-sub { font-size: 14px; font-weight: 500; color: #7a4632; margin-top: 6px; }
+.hero-time { font-size: 60px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-sub { font-size: 14px; font-weight: 500; line-height: 1.3; color: #7a4632; }
 .hero-sub.center { color: var(--mint-ink); }
 .hero--butter .hero-sub.center { color: var(--butter-ink); }
 .hero-note {
-  align-self: flex-start; background: rgba(255,255,255,0.75); border-radius: var(--pill);
+  align-self: flex-start; max-width: 66%; background: rgba(255,255,255,0.82); border-radius: 16px;
   padding: 8px 15px; font-size: 13px; font-weight: 500; font-style: italic; color: #5c3626;
 }
 .hero-photo { width: 100%; max-width: 240px; border-radius: var(--radius-sm); object-fit: cover; max-height: 200px; align-self: flex-start; }
@@ -111,38 +111,30 @@
 .link-btn { background: none; color: var(--ink-mid); font-weight: 700; font-size: 12.5px; text-decoration: underline; padding: 4px 2px; }
 
 /* ---------- Meters ---------- */
-.meters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.meter-tile { display: flex; flex-direction: column; gap: 6px; text-align: left; color: #111111; }
+.meters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+.meter-tile { display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: left; color: #111111; }
 .tile--mint { background: var(--mint); }
 .tile--lavender { background: var(--lavender); }
 .tile-icon { width: 56px; height: 56px; line-height: 1; display: grid; place-items: center; }
 .tile-icon .app-icon { width: 100%; height: 100%; }
-.icon-paper .app-icon { animation: paper-roll 2.6s ease-in-out infinite; transform-origin: center; }
 .icon-smell .app-icon { animation: smell-wobble 2.1s ease-in-out infinite; transform-origin: center; }
 .tile-label { font-size: 12px; font-weight: 500; }
 .tile-label.mint { color: var(--mint-ink); }
 .tile-label.lavender { color: var(--lavender-ink); }
-.tile-value { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: #111111; }
-.dot-row { display: flex; gap: 4px; margin-top: 6px; }
-.dot { flex: 1; height: 10px; border-radius: var(--pill); background: rgba(255,255,255,0.7); }
-.dot.on { background: #111111; }
+.tile-value { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: #111111; }
 .tile-hint { font-size: 11.5px; font-weight: 500; margin-top: 6px; }
 .tile-hint.lavender { color: var(--lavender-ink); }
-.smell-seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
-.smell-seg-btn { min-width: 0; display: grid; place-items: center; background: rgba(255,255,255,0.7); border-radius: 12px; padding: 7px 0; border: 2px solid transparent; transition: transform 0.1s ease; }
-.smell-seg-btn .app-icon { width: 34px; height: 34px; animation: icon-float 2.8s ease-in-out infinite; }
-.smell-seg-btn:active { transform: scale(0.94); }
-.smell-seg-btn.on { background: #ffffff; border-color: #111111; }
-
-/* Kağıt seçici (dokununca açılan sheet) */
-.paper-pick { display: flex; flex-direction: column; gap: 8px; }
-.paper-pick-btn { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: var(--radius-row); padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--ink-mid); border: 2px solid transparent; }
-.paper-pick-icon { width: 54px; height: 54px; display: grid; place-items: center; flex-shrink: 0; }
-.paper-pick-icon .app-icon { width: 100%; height: 100%; }
-.paper-pick-btn .dot-row { margin-top: 0; width: 70px; }
-.paper-pick-btn .dot { background: var(--track); }
-.paper-pick-btn .dot.on { background: var(--mint-ink); }
-.paper-pick-btn.on { border-color: var(--ink); color: var(--ink); }
+/* Kağıt ve koku için ortak inline seçici — dokununca doğrudan değiştirir. */
+.meter-seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 10px; }
+.meter-seg-btn { min-width: 0; display: grid; place-items: center; background: rgba(255,255,255,0.6); border-radius: 12px; padding: 6px 0; border: 2px solid transparent; transition: transform 0.1s ease, background 0.15s ease; }
+.meter-seg-btn .app-icon { width: 30px; height: 30px; }
+.meter-seg-btn:active { transform: scale(0.92); }
+.meter-seg-btn.on { background: #ffffff; border-color: #111111; }
+/* Kağıt seviyesi: artan yükseklikte doluluk çubuğu (az → çok) */
+.paper-seg-btn { padding: 7px 0; }
+.paper-bar-track { width: 16px; height: 30px; display: flex; align-items: flex-end; }
+.paper-bar { width: 100%; min-height: 5px; border-radius: 4px 4px 2px 2px; background: rgba(17,17,17,0.35); }
+.paper-seg-btn.on .paper-bar { background: #111111; }
 
 /* ---------- Sıra (kuyruk) ---------- */
 .queue-tile { display: flex; flex-direction: column; gap: 10px; }
