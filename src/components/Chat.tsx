@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { CHAT_MAX, type Message } from "../lib/useMessages";
+import type { Member } from "../members";
+import Avatar from "./Avatar";
 
 type Props = {
   messages: Message[];
+  members: Member[];
   identity: string | null;
   onSend: (body: string) => void;
   onPickIdentity: () => void;
@@ -24,9 +27,10 @@ function hhmm(iso: string) {
   return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
 }
 
-export default function Chat({ messages, identity, onSend, onPickIdentity }: Props) {
+export default function Chat({ messages, members, identity, onSend, onPickIdentity }: Props) {
   const [text, setText] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
+  const memberOf = (n: string) => members.find((m) => m.name === n);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -58,6 +62,13 @@ export default function Chat({ messages, identity, onSend, onPickIdentity }: Pro
                     className="msg-sender"
                     style={tone === "tile" ? { color: senderColor(m.sender) } : undefined}
                   >
+                    <span className="msg-ava" aria-hidden>
+                      {memberOf(m.sender)?.avatar_url ? (
+                        <Avatar emoji={memberOf(m.sender)?.emoji ?? "🙂"} color={memberOf(m.sender)?.color ?? "#f2711c"} avatarUrl={memberOf(m.sender)?.avatar_url} size={18} />
+                      ) : (
+                        <span className="msg-ava-emoji">{memberOf(m.sender)?.emoji ?? "🙂"}</span>
+                      )}
+                    </span>
                     {m.sender}
                   </span>
                   <span className="msg-body">{m.body}</span>
