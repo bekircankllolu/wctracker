@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../supabaseClient";
 
 export type Message = {
@@ -98,5 +98,16 @@ export function useMessages() {
     });
   }, []);
 
-  return { messages, send };
+  // Görüntü sırası her zaman gönderim zamanına göre (array-push sırasına değil).
+  // Eşit zaman damgasında kararlı kal (id'ye göre).
+  const sorted = useMemo(
+    () =>
+      [...messages].sort((a, b) => {
+        const d = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        return d !== 0 ? d : a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+      }),
+    [messages],
+  );
+
+  return { messages: sorted, send };
 }

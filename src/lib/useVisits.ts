@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { MAX_REASONABLE_STAY } from "./format";
 
 export type Visit = {
   id: string;
@@ -19,7 +20,9 @@ export type Stats = {
   perMember: MemberStat[];
 };
 
-function computeStats(visits: Visit[]): Stats {
+function computeStats(allVisits: Visit[]): Stats {
+  // Anormal (sayaç durdurulmamış) oturumları istatistik dışı bırak.
+  const visits = allVisits.filter((v) => v.duration_seconds <= MAX_REASONABLE_STAY);
   const counts = new Map<string, number>();
   const totals = new Map<string, number>();
   let longest: Leader = null;

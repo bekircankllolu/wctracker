@@ -1,16 +1,10 @@
 import { useState } from "react";
 import type { Stats, Visit } from "../lib/useVisits";
 import type { Member } from "../members";
+import { fmtDuration } from "../lib/format";
 import AppIcon from "./AppIcon";
 import Avatar from "./Avatar";
 import MemberDetail from "./MemberDetail";
-
-function fmtDuration(sec: number): string {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  if (m === 0) return `${s} sn`;
-  return `${m} dk ${s} sn`;
-}
 
 type Props = { stats: Stats; statsWeek: Stats; members: Member[]; visits: Visit[] };
 
@@ -36,7 +30,7 @@ export default function StatsPanel({ stats, statsWeek, members, visits }: Props)
             const mem = memberOf(m.name);
             return (
               <button className={`lb-item tappable ${i === 0 ? "first" : ""}`} key={m.name} onClick={() => setSelected(m.name)}>
-                <span className="lb-rank">{i === 0 ? <AppIcon name="trophy" /> : i + 1}</span>
+                <span className="lb-rank">{i + 1}</span>
                 <span className="lb-name">{m.name}</span>
                 <span className="lb-pill">{m.count} kez</span>
                 <span className="plain-avatar" style={{ width: 40, height: 40 }}>
