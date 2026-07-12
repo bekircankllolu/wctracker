@@ -1,13 +1,12 @@
-import { useState } from "react";
 import type { Phase } from "../lib/useWcState";
 import AppIcon, { type AppIconName } from "./AppIcon";
 
 const PAPER = [
-  { label: "Bitmiş", value: 0, dots: 0, icon: "paper-empty" },
-  { label: "Az kalmış", value: 30, dots: 1, icon: "paper-low" },
-  { label: "Biraz bitmiş", value: 70, dots: 3, icon: "paper-medium" },
-  { label: "Daha çok var", value: 100, dots: 4, icon: "paper-full" },
-] satisfies Array<{ label: string; value: number; dots: number; icon: AppIconName }>;
+  { label: "Bitmiş", value: 0, fill: "24%" },
+  { label: "Az kalmış", value: 30, fill: "46%" },
+  { label: "Biraz bitmiş", value: 70, fill: "72%" },
+  { label: "Daha çok var", value: 100, fill: "100%" },
+] satisfies Array<{ label: string; value: number; fill: string }>;
 function paperStage(level: number): number {
   if (level <= 10) return 0;
   if (level <= 45) return 1;
@@ -32,7 +31,6 @@ type Props = {
 };
 
 export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmell, onPaper, onSmell }: Props) {
-  const [paperOpen, setPaperOpen] = useState(false);
   const stage = paperStage(paperLevel);
   const paper = PAPER[stage];
   const smell = SMELL[Math.max(0, Math.min(SMELL.length - 1, smellLevel))];
@@ -40,16 +38,26 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
 
   return (
     <div className="meters">
-      <button className="tile tile--mint meter-tile" onClick={() => setPaperOpen(true)}>
-        <span className="tile-icon icon-paper" aria-hidden><AppIcon name={paper.icon} /></span>
+      {/* Kağıt herkes tarafından ayarlanabilir — koku gibi dokununca doğrudan değişir.
+          Seviyeler artan doluluk çubuğuyla gösterilir (az → çok). */}
+      <div className="tile tile--mint meter-tile">
         <span className="tile-label mint">Kağıt</span>
         <span className="tile-value">{paper.label}</span>
-        <span className="dot-row">
-          {[0, 1, 2, 3].map((i) => (
-            <span key={i} className={`dot ${i < paper.dots ? "on" : ""}`} />
+        <div className="meter-seg">
+          {PAPER.map((p, i) => (
+            <button
+              key={p.label}
+              className={`meter-seg-btn paper-seg-btn ${stage === i ? "on" : ""}`}
+              onClick={() => onPaper(p.value)}
+              aria-label={p.label}
+            >
+              <span className="paper-bar-track" aria-hidden>
+                <span className="paper-bar" style={{ height: p.fill }} />
+              </span>
+            </button>
           ))}
-        </span>
-      </button>
+        </div>
+      </div>
 
       <div className="tile tile--lavender meter-tile">
         {canSetSmell ? (
@@ -62,11 +70,11 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
         )}
         <span className="tile-value">{smell.label}</span>
         {canSetSmell ? (
-          <div className="smell-seg">
+          <div className="meter-seg">
             {SMELL.map((sm, i) => (
               <button
                 key={sm.icon}
-                className={`smell-seg-btn ${smellLevel === i ? "on" : ""}`}
+                className={`meter-seg-btn ${smellLevel === i ? "on" : ""}`}
                 onClick={() => onSmell(i)}
                 aria-label={sm.label}
               >
@@ -78,38 +86,6 @@ export default function ToiletMeters({ phase, paperLevel, smellLevel, canSetSmel
           <span className="tile-hint lavender">{smellHint}</span>
         )}
       </div>
-
-      {paperOpen ? (
-        <div className="sheet-backdrop" onClick={() => setPaperOpen(false)}>
-          <div
-            className="sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="paper-picker-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sheet-head">
-              <h2 id="paper-picker-title">Tuvalet kağıdı</h2>
-              <button className="sheet-close" onClick={() => setPaperOpen(false)} aria-label="Kapat">✕</button>
-            </div>
-            <div className="paper-pick">
-              {PAPER.map((p, i) => (
-                <button
-                  key={p.icon}
-                  className={`paper-pick-btn ${stage === i ? "on" : ""}`}
-                  onClick={() => { onPaper(p.value); setPaperOpen(false); }}
-                >
-                  <span className="paper-pick-icon" aria-hidden><AppIcon name={p.icon} /></span>
-                  <span className="dot-row">
-                    {[0, 1, 2, 3].map((d) => <span key={d} className={`dot ${d < p.dots ? "on" : ""}`} />)}
-                  </span>
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
