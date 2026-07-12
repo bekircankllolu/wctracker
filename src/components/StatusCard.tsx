@@ -77,7 +77,7 @@ export default function StatusCard({
     <div className={`hero hero--peach ${poked ? "poked" : ""}`}>
       <video className="hero-video" src="/hero-bg-occupied.mp4" poster="/hero-bg-occupied.jpg" autoPlay loop muted playsInline />
       <div className="hero-content">
-        <div className="hero-top">
+        <div className="hero-top hero-top--occupant">
           <span className="hero-pill"><span className="live-dot pulse" aria-hidden />{amOccupant ? "SEN İÇERİDESİN" : "DOLU"}</span>
           <span className="hero-avatar">
             {avatarUrl ? (

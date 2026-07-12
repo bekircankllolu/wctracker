@@ -66,6 +66,7 @@
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)} }
 
 .hero-top { display: flex; align-items: center; justify-content: space-between; min-height: 52px; }
+.hero-top--occupant { justify-content: flex-start; gap: 10px; }
 .hero-pill { display: inline-flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 7px 14px; border-radius: var(--pill); white-space: nowrap; }
 /* Durum göstergesi noktası — "içeride" iken canlı (live) pulse yapar. */
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
@@ -121,13 +122,14 @@
 /* ---------- Meters ---------- */
 .meters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
 .meter-tile { display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: left; color: #111111; }
-.tile--mint { background: var(--mint); }
+.tile--paper { background: var(--butter); }
 .tile--lavender { background: var(--lavender); }
 .tile-icon { width: 56px; height: 56px; line-height: 1; display: grid; place-items: center; }
 .tile-icon .app-icon { width: 100%; height: 100%; }
+.icon-smell { width: 76px; height: 76px; align-self: center; margin-bottom: 2px; }
 .icon-smell .app-icon { animation: smell-wobble 2.1s ease-in-out infinite; transform-origin: center; }
 .tile-label { font-size: 12px; font-weight: 500; }
-.tile-label.mint { color: var(--mint-ink); }
+.tile-label.paper { color: var(--butter-ink); }
 .tile-label.lavender { color: var(--lavender-ink); }
 .tile-value { font-size: var(--text-h2); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: #111111; }
 .tile-hint { font-size: 11.5px; font-weight: 500; margin-top: 6px; }
