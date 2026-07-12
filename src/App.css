@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: max(14px, env(safe-area-inset-top)) 16px calc(112px + env(safe-area-inset-bottom));
+  padding: max(14px, env(safe-area-inset-top)) 16px var(--nav-safe);
   gap: 12px;
   background: var(--bg);
 }
@@ -29,7 +29,7 @@
 
 /* ---------- Top bar ---------- */
 .topbar { width: 100%; max-width: 390px; display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
-.tb-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+.tb-title { font-size: var(--text-h1); font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
 .tb-right { display: flex; gap: 8px; }
 .tb-icon-btn, .avatar-chip {
   position: relative; width: 42px; height: 42px; border-radius: 14px;
@@ -70,7 +70,7 @@
 .hero-pill.self { align-self: flex-start; }
 .hero-avatar { width: 52px; height: 52px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; }
 .hero-avatar-emoji { font-size: 26px; line-height: 1; }
-.hero-time { font-size: 60px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-time { font-size: var(--text-display); font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
 .hero-sub { font-size: 14px; font-weight: 500; line-height: 1.3; color: #7a4632; }
 .hero-sub.center { color: var(--mint-ink); }
 .hero--butter .hero-sub.center { color: var(--butter-ink); }
@@ -85,7 +85,7 @@
 .hero-icon .app-icon { width: 100%; height: 100%; }
 .hero-icon--toilet { width: 122px; height: 122px; animation: icon-float 3.8s ease-in-out infinite; }
 .hero-icon--smell { animation: smell-wobble 1.9s ease-in-out infinite; }
-.hero-title { font-size: 44px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+.hero-title { font-size: var(--text-hero); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
 .hero-clock { font-size: 56px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
 .hero-chip { background: rgba(255,255,255,0.8); border-radius: var(--pill); padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--butter-ink); }
 
@@ -121,7 +121,7 @@
 .tile-label { font-size: 12px; font-weight: 500; }
 .tile-label.mint { color: var(--mint-ink); }
 .tile-label.lavender { color: var(--lavender-ink); }
-.tile-value { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: #111111; }
+.tile-value { font-size: var(--text-h2); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: #111111; }
 .tile-hint { font-size: 11.5px; font-weight: 500; margin-top: 6px; }
 .tile-hint.lavender { color: var(--lavender-ink); }
 /* Kağıt ve koku için ortak inline seçici — dokununca doğrudan değiştirir. */

@@ -6,8 +6,8 @@
   --tile: #f3f2ef;
   --card: #ffffff;
   --ink: #111111;
-  --ink-mid: #6f6b63;
-  --ink-dim: #a9a49c;
+  --ink-mid: #6b675f;
+  --ink-dim: #857f74; /* WCAG AA: nötr zeminlerde ~4.3:1 */
   --line: #e4e2dd;
   --track: #e4e2dd;
 
@@ -37,6 +37,26 @@
 
   --shadow: 0 14px 30px rgba(17, 17, 17, 0.16);
   --shadow-sm: 0 1px 3px rgba(17, 17, 17, 0.06);
+
+  /* Spacing ölçeği — tüm boşluklar bu adımlardan seçilir */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  /* Type ölçeği (Space Grotesk) — serbest px yerine bu token'lar */
+  --text-display: 60px; /* hero sayaç */
+  --text-hero: 44px;    /* Müsait */
+  --text-h1: 20px;      /* sayfa başlığı */
+  --text-h2: 18px;      /* kart başlığı / karo değeri */
+  --text-body: 14px;    /* gövde */
+  --text-label: 12px;   /* pill / eyebrow */
+  --text-caption: 11px; /* saat / sayaç */
+
+  /* Alt navigasyonun kapladığı güvenli alan (sayfa altı boşluğu) */
+  --nav-safe: calc(120px + env(safe-area-inset-bottom));
 
   --font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
 
