@@ -66,7 +66,14 @@
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)} }
 
 .hero-top { display: flex; align-items: center; justify-content: space-between; min-height: 52px; }
-.hero-pill { background: #111111; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 7px 14px; border-radius: var(--pill); white-space: nowrap; }
+.hero-pill { display: inline-flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 7px 14px; border-radius: var(--pill); white-space: nowrap; }
+/* Durum göstergesi noktası — "içeride" iken canlı (live) pulse yapar. */
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.live-dot.pulse { animation: live-pulse 1.8s ease-in-out infinite; }
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55); }
+  50% { box-shadow: 0 0 0 5px rgba(255, 255, 255, 0); }
+}
 .hero-pill.self { align-self: flex-start; }
 .hero-avatar { width: 52px; height: 52px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; }
 .hero-avatar-emoji { font-size: 26px; line-height: 1; }
@@ -176,7 +183,10 @@
 .chat-screen { display: flex; flex-direction: column; gap: 12px; }
 .chat-list { display: flex; flex-direction: column; gap: 12px; max-height: 58dvh; overflow-y: auto; }
 .chat-empty { color: var(--ink-dim); font-weight: 500; text-align: center; padding: 20px; }
-.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 78%; align-self: flex-start; }
+.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 78%; align-self: flex-start; animation: msg-in 0.2s ease-out; }
+/* Her mesaj (mount olduğunda) alttan hafif kayarak belirir; React key'leri
+   sayesinde yalnızca yeni gelen mesaj animasyon alır, eskiler sabit kalır. */
+@keyframes msg-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
 .msg-row.mine { align-self: flex-end; align-items: flex-end; }
 .bubble { border-radius: 6px 18px 18px 18px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; }
 .msg-row.mine .bubble { border-radius: 18px 6px 18px 18px; }
@@ -208,6 +218,11 @@
 .cal-arrow:active { transform: scale(0.9); }
 .cal-month { font-size: 15.5px; font-weight: 700; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+/* Ay değişince grid yönlü kayarak gelir (flaş yerine). */
+.cal-slide.next { animation: cal-slide-next 0.22s ease-out; }
+.cal-slide.prev { animation: cal-slide-prev 0.22s ease-out; }
+@keyframes cal-slide-next { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes cal-slide-prev { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
 .cal-dow { margin-bottom: 6px; }
 .cal-dowcell { text-align: center; font-size: 11px; font-weight: 700; color: var(--ink-dim); }
 .cal-cell { aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
@@ -424,3 +439,22 @@
 .identity-opt { background: var(--tile); border-radius: 20px; padding: 18px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; color: var(--ink); border: 2px solid transparent; }
 .identity-opt.sel { background: var(--peach); border-color: var(--ink); font-weight: 700; color: #111111; }
 .identity-clear { text-align: center; background: var(--tile); color: var(--ink-mid); border-radius: var(--pill); padding: 13px; font-size: 13.5px; font-weight: 700; }
+
+/* ---------- Mikro-etkileşim: press feedback + klavye odağı ---------- */
+.seg-btn, .theme-opt, .queue-btn, .btn-primary, .btn-ghost, .chat-send,
+.identity-opt, .emoji-opt, .roster-edit, .roster-del, .sheet-close,
+.cal-arrow, .photo-btn, .link-btn {
+  transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease, border-color 0.18s ease;
+}
+.seg-btn:active, .theme-opt:active, .queue-btn:active,
+.btn-primary:not(:disabled):active, .btn-ghost:active, .chat-send:not(:disabled):active,
+.identity-opt:active, .emoji-opt:active, .roster-edit:active, .roster-del:active,
+.sheet-close:active, .photo-btn:not(:disabled):active {
+  transform: scale(0.96);
+}
+/* Klavye ile gezinince odak her interaktif elemanda görünür olsun. */
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}

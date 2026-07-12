@@ -50,8 +50,9 @@ export default function Calendar({ members, visits: allVisits }: Props) {
     const d = new Date(start); d.setDate(start.getDate() + i); return d;
   });
 
-  const prev = () => setView((v) => (v.m === 0 ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 }));
-  const next = () => setView((v) => (v.m === 11 ? { y: v.y + 1, m: 0 } : { y: v.y, m: v.m + 1 }));
+  const [dir, setDir] = useState<"prev" | "next">("next");
+  const prev = () => { setDir("prev"); setView((v) => (v.m === 0 ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 })); };
+  const next = () => { setDir("next"); setView((v) => (v.m === 11 ? { y: v.y + 1, m: 0 } : { y: v.y, m: v.m + 1 })); };
 
   return (
     <>
@@ -62,7 +63,7 @@ export default function Calendar({ members, visits: allVisits }: Props) {
           <button className="cal-arrow" onClick={next} aria-label="Sonraki">›</button>
         </div>
         <div className="cal-grid cal-dow">{DAYS.map((d) => <span key={d} className="cal-dowcell">{d}</span>)}</div>
-        <div className="cal-grid">
+        <div className={`cal-grid cal-slide ${dir}`} key={`${view.y}-${view.m}`}>
           {cells.map((d, i) => {
             const inMonth = d.getMonth() === view.m;
             const isToday = key(d) === key(today);
